@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=4 uid="uid://dr2suvocq6a4"]
 
 [ext_resource type="Texture2D" uid="uid://cm2flgvreba5s" path="res://texture/tiles.png" id="1_p23b3"]
-[ext_resource type="PackedScene" uid="uid://6noqvu6isxpk" path="res://scene/player.tscn" id="2_851uq"]
+[ext_resource type="PackedScene" uid="uid://jh0yyh3tkxhq" path="res://scene/player.tscn" id="2_v0l8b"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_a8nm6"]
 texture = ExtResource("1_p23b3")
@@ -741,5 +741,5 @@ tile_set = SubResource("TileSet_wmo6m")
 tile_map_data = PackedByteArray("AAAEAAUAAAAUAAEAAAAEAAYAAAAUAAIAAAAFAAUAAAAVAAEAAAAFAAYAAAAVAAIAAAAGAAcAAAAUAAEAAAAGAAgAAAAUAAIAAAAHAAcAAAAVAAEAAAAHAAgAAAAVAAIAAAAIAAkAAAAUAAEAAAAIAAoAAAAUAAIAAAAJAAkAAAAVAAEAAAAJAAoAAAAVAAIAAAAKAAsAAAAHAAQAAAAKAAwAAAAHAAUAAAALAAsAAAAIAAQAAAALAAwAAAAIAAUAAAAMAAwAAAAHAAUAAAANAAwAAAAIAAUAAAAOAAwAAAAJAAUAAAAPAAwAAAAKAAUAAAAQAAwAAAALAAUAAAARAAwAAAAMAAUAAAASAAwAAAANAAUAAAATAAwAAAAOAAUAAAAUAAwAAAAPAAUAAAAVAAwAAAAQAAUAAAAWAAwAAAARAAUAAAAXAAwAAAASAAUAAAAYAAwAAAATAAUAAAAZAAwAAAAUAAUAAAAaAAwAAAAVAAUAAAAbAAwAAAAWAAUAAAAcAAwAAAAXAAUAAAAQAAkAAAAOAAYAAAAQAAoAAAAOAAcAAAAQAAsAAAAOAAgAAAARAAkAAAAPAAYAAAARAAoAAAAPAAcAAAARAAsAAAAPAAgAAAASAAkAAAAQAAYAAAASAAoAAAAQAAcAAAASAAsAAAAQAAgAAAATAAkAAAARAAYAAAATAAoAAAARAAcAAAATAAsAAAARAAgAAAA=")
 tile_set = SubResource("TileSet_f38pd")
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("2_851uq")]
-position = Vector2(192, 115)
+[node name="CharacterBody2D" parent="." instance=ExtResource("2_v0l8b")]
+position = Vector2(234, 134)

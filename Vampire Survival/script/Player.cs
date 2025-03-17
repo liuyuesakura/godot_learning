@@ -30,7 +30,7 @@ public partial class Player : CharacterBody2D
         {
             _facingDirection = inputDirection.Normalized();
         }
-        
+
         // 更新速度
         Velocity = inputDirection * MoveSpeed;
         
@@ -38,12 +38,13 @@ public partial class Player : CharacterBody2D
         MoveAndSlide();
         //切换动画播放
         AnimPlay();
-
+        QueueRedraw();
     }
     
     // 在_Process中绘制方向指示线
     public override void _Draw()
     {
+        // GD.Print(_facingDirection);
         DrawLine(Vector2.Zero, _facingDirection * 50, Colors.Red, 2);
     }
 

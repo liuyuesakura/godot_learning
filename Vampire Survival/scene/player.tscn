@@ -485,4 +485,7 @@ position = Vector2(13, -11)
 sprite_frames = SubResource("SpriteFrames_lw8ol")
 animation = &"lr_move"
 autoplay = "down_idle"
-frame_progress = 0.765936
+frame_progress = 0.389718
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true

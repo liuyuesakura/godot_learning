@@ -1,9 +1,10 @@
-[gd_scene load_steps=71 format=3 uid="uid://jh0yyh3tkxhq"]
+[gd_scene load_steps=72 format=3 uid="uid://jh0yyh3tkxhq"]
 
 [ext_resource type="Texture2D" uid="uid://0pn7n051p4wd" path="res://texture/Without Sword (for gun)/Down/04 Stranded - Pack 4 back up-Idle Down.png" id="1_8caby"]
 [ext_resource type="Script" uid="uid://4cjgmj5jhx6a" path="res://script/Player.cs" id="1_g2vtq"]
 [ext_resource type="Texture2D" uid="uid://cafxerxwqdnr3" path="res://texture/Without Sword (for gun)/Down/04 Stranded - Pack 4 back up-Move Down.png" id="2_61wwb"]
 [ext_resource type="Texture2D" uid="uid://qchqq41s6auu" path="res://texture/Without Sword (for gun)/left right/R.png" id="3_2dedv"]
+[ext_resource type="PackedScene" uid="uid://dhi0c54oj0obo" path="res://scene/weapon/BaseWeapon.tscn" id="3_pisg7"]
 [ext_resource type="Texture2D" uid="uid://dafmnb68etdcu" path="res://texture/Without Sword (for gun)/left right/R move.png" id="4_fqpan"]
 [ext_resource type="Texture2D" uid="uid://d0kbahlxf482d" path="res://texture/Without Sword (for gun)/Up/04 Stranded - Pack 4 back up-Idle Up.png" id="5_7gy1f"]
 [ext_resource type="Texture2D" uid="uid://bntafojuggskn" path="res://texture/Without Sword (for gun)/Up/04 Stranded - Pack 4 back up-Move Up.png" id="6_uns0w"]
@@ -480,12 +481,15 @@ texture = ExtResource("7_iwfv5")
 
 [node name="Body" type="Node2D" parent="."]
 
+[node name="BaseWeapon" parent="Body" instance=ExtResource("3_pisg7")]
+position = Vector2(-1, 0)
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Body"]
 position = Vector2(13, -11)
 sprite_frames = SubResource("SpriteFrames_lw8ol")
 animation = &"lr_move"
 autoplay = "down_idle"
-frame_progress = 0.389718
+frame_progress = 0.864693
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true

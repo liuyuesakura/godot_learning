@@ -485,4 +485,4 @@ position = Vector2(13, -11)
 sprite_frames = SubResource("SpriteFrames_lw8ol")
 animation = &"lr_move"
 autoplay = "down_idle"
-frame_progress = 0.737055
+frame_progress = 0.765936

@@ -4,6 +4,4 @@ https://www.bilibili.com/video/BV1nnATeWEtM/?spm_id_from=333.1007.top_right_bar_
 目前进度：P2 添加控制脚本
 todo:
 
-左右移动的面向翻转
-
 辅助线方向没有变

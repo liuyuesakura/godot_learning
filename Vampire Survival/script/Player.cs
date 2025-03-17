@@ -84,11 +84,11 @@ public partial class Player : CharacterBody2D
         switch (GetCardinalDirection())
         {
             case CardinalDirection.Left:
-                _body.Scale *= Vector2.Left;
+                _body.Scale = Vector2.Left + Vector2.Down;
                 _anim.Play("lr_move");
                 break;
             case CardinalDirection.Right:
-                _body.Scale *= Vector2.Right;
+                _body.Scale = Vector2.Right + Vector2.Down;
                 _anim.Play("lr_move");
                 break;
             case CardinalDirection.Up:

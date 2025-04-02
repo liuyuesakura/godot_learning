@@ -5,5 +5,6 @@
 [node name="BaseWeapon" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(13, -8)
 scale = Vector2(4.31497, 7.37883)
 texture = ExtResource("1_qficx")

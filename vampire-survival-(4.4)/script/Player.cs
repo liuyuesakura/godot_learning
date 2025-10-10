@@ -10,13 +10,11 @@ public partial class Player : CharacterBody2D
     
     [Export] private AnimatedSprite2D _anim;
     [Export] private Node2D _body;
-    [Export] private Node2D _weaponNode;
 
     public override void _Ready()
     {
         _anim ??= GetNode<AnimatedSprite2D>("Body/AnimatedSprite2D");
         _body ??= GetNode<Node2D>("Body");
-        _weaponNode ??= GetNode<Node2D>("Body/WeaponNode");
     }
     
     // 记录面向方向的只读属性
@@ -83,21 +81,19 @@ public partial class Player : CharacterBody2D
 
     private void AnimPlay()
     {
-        _weaponNode.ZIndex = 1;
         // 在动画脚本中根据方向切换动画
         switch (GetCardinalDirection())
         {
             case CardinalDirection.Left:
-                // _body.Scale = Vector2.Left + Vector2.Down;
+                _body.Scale = Vector2.Left + Vector2.Down;
                 _anim.Play("lr_move");
                 break;
             case CardinalDirection.Right:
-                // _body.Scale = Vector2.Right + Vector2.Down;
+                _body.Scale = Vector2.Right + Vector2.Down;
                 _anim.Play("lr_move");
                 break;
             case CardinalDirection.Up:
                 _anim.Play("up_move");
-                _weaponNode.ZIndex = 0;
                 break;
             case CardinalDirection.Down:
                 _anim.Play("down_move");
@@ -105,20 +101,6 @@ public partial class Player : CharacterBody2D
             default:
                 break;
         }
-        
-        var v2 = GetGlobalMousePosition();
-        _weaponNode.LookAt(v2);
-
-        if (v2.X > Position.X && _body.Scale.X != 1) // 武器朝向右侧
-        {
-            _body.Scale = _body.Scale with { X = 1 };
-        }
-        else if( v2.X < Position.X && _body.Scale.X != -1)//  weapon towards left
-        {
-            _body.Scale = _body.Scale with { X = -1 };
-        }
-        
-        GD.Print(Position);
     }
 }
 

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhi0c54oj0obo"]
+
+[ext_resource type="Texture2D" uid="uid://rsfj2l2m4kxo" path="res://texture/Guns/gun1.png" id="1_qficx"]
+
+[node name="BaseWeapon" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(13, -8)
+scale = Vector2(4.31497, 7.37883)
+texture = ExtResource("1_qficx")

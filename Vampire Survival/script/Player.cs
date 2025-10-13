@@ -17,6 +17,8 @@ public partial class Player : CharacterBody2D
         _anim ??= GetNode<AnimatedSprite2D>("Body/AnimatedSprite2D");
         _body ??= GetNode<Node2D>("Body");
         _weaponNode ??= GetNode<Node2D>("Body/WeaponNode");
+
+        Game.Player = this;
     }
     
     // 记录面向方向的只读属性
@@ -44,11 +46,11 @@ public partial class Player : CharacterBody2D
     }
     
     // 在_Process中绘制方向指示线
-    public override void _Draw()
-    {
-        // GD.Print(_facingDirection);
-        DrawLine(Vector2.Zero, _facingDirection * 50, Colors.Red, 2);
-    }
+    // public override void _Draw()
+    // {
+    //     // GD.Print(_facingDirection);
+    //     DrawLine(Vector2.Zero, _facingDirection * 50, Colors.Red, 2);
+    // }
 
     private Vector2 GetInputDirection()
     {
@@ -117,8 +119,6 @@ public partial class Player : CharacterBody2D
         {
             _body.Scale = _body.Scale with { X = -1 };
         }
-        
-        GD.Print(Position);
     }
 }
 

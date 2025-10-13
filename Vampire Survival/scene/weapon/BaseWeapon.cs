@@ -3,23 +3,22 @@ using System;
 
 public partial class BaseWeapon : Node2D
 {
-    private Bullet Bullet;
+    private PackedScene Bullet;
     
-    [Export]
-    private Node2D BulletPoint;
-    
+    private Node2D _bulletPoint;
+     
     public override void _Ready()
     {
-        Bullet = GD.Load<Bullet>("res://scene/bullet/BaseBullet.tscn");
-        BulletPoint = GetNode<Node2D>("BulletPoint");
+        Bullet = GD.Load<PackedScene>("res://scene/bullet/BaseBullet.tscn");
+        _bulletPoint = GetNode<Node2D>("BulletPoint");
     }
 
     private void Shoot()
     {
-        var instance = new Bullet();
-        instance.GlobalPosition = BulletPoint.GlobalPosition;
-        instance.LookAt( BulletPoint.GlobalPosition.DirectionTo(GetGlobalMousePosition()));
-        instance.Direction = BulletPoint.GlobalPosition.DirectionTo(GetGlobalMousePosition());
+        var instance = Bullet.Instantiate<Node2D>();
+        instance.GlobalPosition = _bulletPoint.GlobalPosition;
+        instance.LookAt( _bulletPoint.GlobalPosition.DirectionTo(GetGlobalMousePosition()));
+        //instance = BulletPoint.GlobalPosition.DirectionTo(GetGlobalMousePosition());
         GetTree().Root.AddChild(instance);
     }
 

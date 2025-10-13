@@ -7,9 +7,8 @@
 script = ExtResource("2_d1kll")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(4, -1)
+position = Vector2(4, 0)
 texture = ExtResource("1_qficx")
 
 [node name="BulletPoint" type="Node2D" parent="."]
-position = Vector2(9, -3)
-script = ExtResource("2_d1kll")
+position = Vector2(9, -1)

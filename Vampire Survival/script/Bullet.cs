@@ -9,10 +9,15 @@ public partial class Bullet : Node2D
     [Export]
     public Vector2 Direction { get; set; } = Vector2.Zero;
 
+    public override void _Ready()
+    {
+        LookAt(GetGlobalMousePosition());
+        Direction = (GetGlobalMousePosition() - Position).Normalized();
+        
+    }
+
     public override void _PhysicsProcess(double delta)
     {
-        Position = Direction * (float)delta * Speed;
-        
-        base._PhysicsProcess(delta);
+        Position += Direction * (float)delta * Speed;
     }
 }

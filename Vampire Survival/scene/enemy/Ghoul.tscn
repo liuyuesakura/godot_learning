@@ -230,14 +230,22 @@ script = ExtResource("2_ldgbk")
 [node name="AnimatedSprite2D" parent="Body" index="0"]
 position = Vector2(1, -16)
 sprite_frames = SubResource("SpriteFrames_fd232")
-animation = &"atk"
+animation = &"walk"
 autoplay = "idle"
-frame_progress = 0.8004258
+frame_progress = 0.20131901
 
 [node name="AtkArea" parent="." index="3"]
 position = Vector2(0, -10)
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" parent="AtkArea" index="0"]
-position = Vector2(13, -6.5)
+position = Vector2(0, -7)
 shape = SubResource("RectangleShape2D_ldgbk")
-metadata/_edit_lock_ = true
+debug_color = Color(0.8819358, 0.30480587, 0.38059732, 0.41960785)
+
+[connection signal="animation_changed" from="Body/AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_changed"]
+[connection signal="animation_finished" from="Body/AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]
+[connection signal="frame_changed" from="Body/AnimatedSprite2D" to="." method="_on_animated_sprite_2d_frame_changed"]
+[connection signal="body_entered" from="AtkArea" to="." method="_on_atk_area_body_entered"]
+[connection signal="body_exited" from="AtkArea" to="." method="_on_atk_area_body_exited"]

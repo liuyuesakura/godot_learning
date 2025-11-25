@@ -1,5 +1,3 @@
-using Godot;
-
 namespace VampireSurvival.script;
 
 public static class Game

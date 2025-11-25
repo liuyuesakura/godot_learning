@@ -1,4 +1,3 @@
-using System;
 using Godot;
 
 namespace VampireSurvival.script;
@@ -104,18 +103,16 @@ public partial class Player : CharacterBody2D
             case CardinalDirection.Down:
                 _anim.Play("down_move");
                 break;
-            default:
-                break;
         }
         
         var v2 = GetGlobalMousePosition();
         _weaponNode.LookAt(v2);
 
-        if (v2.X > Position.X && _body.Scale.X != 1) // 武器朝向右侧
+        if (v2.X > Position.X && !Mathf.IsEqualApprox(_body.Scale.X, 1)) // 武器朝向右侧
         {
             _body.Scale = _body.Scale with { X = 1 };
         }
-        else if( v2.X < Position.X && _body.Scale.X != -1)//  weapon towards left
+        else if( v2.X < Position.X && !Mathf.IsEqualApprox(_body.Scale.X, -1))//  weapon towards left
         {
             _body.Scale = _body.Scale with { X = -1 };
         }

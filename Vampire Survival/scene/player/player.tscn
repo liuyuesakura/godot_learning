@@ -1,9 +1,10 @@
-[gd_scene load_steps=72 format=3 uid="uid://jh0yyh3tkxhq"]
+[gd_scene load_steps=86 format=3 uid="uid://jh0yyh3tkxhq"]
 
 [ext_resource type="Texture2D" uid="uid://0pn7n051p4wd" path="res://texture/Without Sword (for gun)/Down/04 Stranded - Pack 4 back up-Idle Down.png" id="1_8caby"]
 [ext_resource type="Script" uid="uid://4cjgmj5jhx6a" path="res://script/Player.cs" id="1_g2vtq"]
 [ext_resource type="Texture2D" uid="uid://cafxerxwqdnr3" path="res://texture/Without Sword (for gun)/Down/04 Stranded - Pack 4 back up-Move Down.png" id="2_61wwb"]
 [ext_resource type="Texture2D" uid="uid://qchqq41s6auu" path="res://texture/Without Sword (for gun)/left right/R.png" id="3_2dedv"]
+[ext_resource type="Texture2D" uid="uid://72fsww414e5y" path="res://texture/Without Sword (for gun)/04 Stranded - Pack 4 back up-Death.png" id="3_oypl4"]
 [ext_resource type="PackedScene" uid="uid://dhi0c54oj0obo" path="res://scene/weapon/BaseWeapon.tscn" id="3_pisg7"]
 [ext_resource type="Texture2D" uid="uid://dafmnb68etdcu" path="res://texture/Without Sword (for gun)/left right/R move.png" id="4_fqpan"]
 [ext_resource type="Texture2D" uid="uid://d0kbahlxf482d" path="res://texture/Without Sword (for gun)/Up/04 Stranded - Pack 4 back up-Idle Up.png" id="5_7gy1f"]
@@ -13,6 +14,58 @@
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_0jxon"]
 radius = 7.0
 height = 20.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qjg4s"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(0, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1wtbu"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(64, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p3aiu"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(128, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f5r2w"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(192, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oen5c"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(256, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5g408"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(320, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sc4n2"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(384, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lrcci"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(448, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fspl2"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(512, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_eeiom"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(576, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gt2ev"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(640, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_aoq8s"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(704, 0, 64, 65)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_740qy"]
+atlas = ExtResource("3_oypl4")
+region = Rect2(768, 0, 64, 65)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3oig7"]
 atlas = ExtResource("1_8caby")
@@ -258,6 +311,50 @@ region = Rect2(448, 0, 64, 65)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_qjg4s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1wtbu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p3aiu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f5r2w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oen5c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5g408")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sc4n2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lrcci")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fspl2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eeiom")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gt2ev")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_aoq8s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_740qy")
+}],
+"loop": true,
+"name": &"death",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_3oig7")
 }, {
 "duration": 1.0,
@@ -487,9 +584,9 @@ texture = ExtResource("7_iwfv5")
 z_index = 1
 position = Vector2(13, -11)
 sprite_frames = SubResource("SpriteFrames_lw8ol")
-animation = &"lr_idle"
+animation = &"death"
 autoplay = "down_idle"
-frame_progress = 0.29426283
+frame_progress = 0.16817114
 metadata/_edit_lock_ = true
 
 [node name="WeaponNode" type="Node2D" parent="Body"]

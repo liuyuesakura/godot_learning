@@ -11,6 +11,9 @@ public partial class Player : CharacterBody2D
     [Export] private Node2D _body;
     [Export] private Node2D _weaponNode;
 
+    private PlayerManager _playerManager = null;
+    public PlayerData PlayerData => _playerManager.PlayerData;
+    
     public override void _Ready()
     {
         _anim ??= GetNode<AnimatedSprite2D>("Body/AnimatedSprite2D");
@@ -18,6 +21,16 @@ public partial class Player : CharacterBody2D
         _weaponNode ??= GetNode<Node2D>("Body/WeaponNode");
 
         Game.Player = this;
+
+        _playerManager = GetNode<PlayerManager>("/root/PlayerManager");
+
+        _playerManager.OnPlayerDeath += OnPlayerDeath;
+    }
+
+    private void OnPlayerDeath()
+    {
+        _weaponNode.Hide();
+        _anim.Play("death");
     }
     
     // 记录面向方向的只读属性
@@ -26,6 +39,12 @@ public partial class Player : CharacterBody2D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (_playerManager.IsDeath())
+        {
+            OnPlayerDeath();
+            return;
+        }
+        
         // 获取输入方向
         var inputDirection = GetInputDirection();
         // 仅在有输入时更新面向方向

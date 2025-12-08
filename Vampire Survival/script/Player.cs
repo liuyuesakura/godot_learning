@@ -26,6 +26,7 @@ public partial class Player : CharacterBody2D, IAttack
 
 		_playerManager.OnPlayerDeath += OnPlayerDeath;
 		_playerManager.OnPlayerHpChanged += OnPlayerHpChanged;
+		_anim.AnimationFinished += _on_animated_sprite_2d_animation_finished;
 	}
 
 	private void OnPlayerHpChanged(int current, int max)
@@ -48,7 +49,7 @@ public partial class Player : CharacterBody2D, IAttack
 	{
 		if (_playerManager.IsDeath())
 		{
-			OnPlayerDeath();
+			//OnPlayerDeath();
 			return;
 		}
 		
@@ -68,6 +69,12 @@ public partial class Player : CharacterBody2D, IAttack
 		//切换动画播放
 		AnimPlay();
 		QueueRedraw();
+	}
+
+	private void _on_animated_sprite_2d_animation_finished()
+	{
+		// if (_anim.Animation == "death")
+		// 	QueueFree();
 	}
 	
 	// 在_Process中绘制方向指示线

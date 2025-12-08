@@ -349,7 +349,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_740qy")
 }],
-"loop": true,
+"loop": false,
 "name": &"death",
 "speed": 5.0
 }, {
@@ -586,7 +586,6 @@ position = Vector2(13, -11)
 sprite_frames = SubResource("SpriteFrames_lw8ol")
 animation = &"death"
 autoplay = "down_idle"
-frame_progress = 0.16817114
 metadata/_edit_lock_ = true
 
 [node name="WeaponNode" type="Node2D" parent="Body"]
@@ -597,3 +596,5 @@ position = Vector2(3, -9)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true
+
+[connection signal="animation_finished" from="Body/AnimatedSprite2D" to="." method="_on_animated_sprite_2d_animation_finished"]

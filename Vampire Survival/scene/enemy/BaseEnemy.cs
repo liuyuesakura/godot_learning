@@ -27,14 +27,17 @@ public partial class BaseEnemy : CharacterBody2D, IAttack
         if (_enemyData.CurrentHp <= 0) // dispose self.
         {
             AnimatedSprite.Play("death");
-            Dispose();
+            Dispose(); // will this work?
             return;
         }
 
         if (_currentState is not (PublicEnums.EnemyState.Death or
             PublicEnums.EnemyState.Atk))
         {
-            Velocity = GlobalPosition.DirectionTo(Game.Player.GlobalPosition) * Speed * (float)delta;
+            if(Game.Player.PlayerData.CurrentHp <= 0)
+                Velocity = Vector2.Zero;
+            else
+                Velocity = GlobalPosition.DirectionTo(Game.Player.GlobalPosition) * Speed * (float)delta;
 
             // 执行移动
             MoveAndSlide();
@@ -76,7 +79,7 @@ public partial class BaseEnemy : CharacterBody2D, IAttack
 
     private void _on_atk_area_body_entered(Node2D body)
     {
-        if (body is Player)
+        if (body is Player player && player.PlayerData.CurrentHp > 0)
         {
             _currentState = PublicEnums.EnemyState.Atk;
             _currentAtkAim = body;
@@ -128,9 +131,10 @@ public partial class BaseEnemy : CharacterBody2D, IAttack
 
     private void _on_animated_sprite_2d_frame_changed()
     {
-        if (AnimatedSprite.Animation == "atk")
+        if (_currentAtkAim != null && ((Player)_currentAtkAim).PlayerData.CurrentHp <= 0)
         {
-            GD.Print(AnimatedSprite.Frame);
+            _currentAtkAim = null;
+            _currentState = PublicEnums.EnemyState.Idle;
         }
         if (_currentState == PublicEnums.EnemyState.Atk && AnimatedSprite.Animation == "atk")
         {

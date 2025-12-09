@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://6plv42tp3hl2"]
+
+[ext_resource type="PackedScene" uid="uid://dhi0c54oj0obo" path="res://scene/weapon/BaseWeapon.tscn" id="1_wd3dj"]
+[ext_resource type="Texture2D" uid="uid://bk10iqntyeinh" path="res://texture/Guns/gun2.png" id="2_j187p"]
+
+[node name="BaseWeapon" instance=ExtResource("1_wd3dj")]
+MagazineMaxSize = 60
+RofBase = 0.5
+
+[node name="Sprite2D" parent="." index="0"]
+texture = ExtResource("2_j187p")

@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3 uid="uid://w6lmknt7pssx"]
+
+[ext_resource type="PackedScene" uid="uid://dr2suvocq6a4" path="res://scene/main.tscn" id="1_kwx10"]
+[ext_resource type="Script" uid="uid://boswoo4he0bja" path="res://ui/MainUI.cs" id="1_tk2vh"]
+
+[node name="MainUi" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tk2vh")
+
+[node name="Main" parent="." instance=ExtResource("1_kwx10")]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 35.0
+offset_top = -247.0
+offset_right = 231.0
+offset_bottom = -35.0
+grow_vertical = 0
+
+[node name="StartBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "start"
+
+[node name="ExitBtn" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+text = "exit"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -58.0
+offset_top = -154.0
+offset_right = 73.0
+offset_bottom = -131.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Vampire Survival"

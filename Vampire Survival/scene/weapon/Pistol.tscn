@@ -6,6 +6,7 @@
 [node name="BaseWeapon" instance=ExtResource("1_wd3dj")]
 MagazineMaxSize = 60
 RofBase = 0.5
+WeaponName = "Pistol"
 
 [node name="Sprite2D" parent="." index="0"]
 texture = ExtResource("2_j187p")

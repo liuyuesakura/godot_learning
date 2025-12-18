@@ -21,6 +21,12 @@ public partial class BaseWeapon : Node2D
 
     [Export]
     public int BulletDamage { set; get; } = 10;
+
+    [Export]
+    public string WeaponName { set; get; } = "Base";
+    
+    [Export]
+    public Sprite2D WeaponSprite  { set; get; }
      
     public override void _Ready()
     {
@@ -42,6 +48,7 @@ public partial class BaseWeapon : Node2D
             Game.PlayerManager.EmitSignal(PlayerManager.SignalName.OnBulletCountChanged, MagazineCurrentCount,
                 MagazineMaxSize);
         };
+        Game.PlayerManager.EmitSignal(PlayerManager.SignalName.OnWeaponChanged, this);
     }
 
     private void Shoot()

@@ -9,7 +9,7 @@ public partial class Player : CharacterBody2D, IAttack
 	
 	[Export] private AnimatedSprite2D _anim;
 	[Export] private Node2D _body;
-	[Export] private Node2D _weaponNode;
+	[Export] public Node2D WeaponNode;
 
 	private PlayerManager _playerManager = null;
 	public PlayerData PlayerData => _playerManager.PlayerData;
@@ -18,7 +18,7 @@ public partial class Player : CharacterBody2D, IAttack
 	{
 		_anim ??= GetNode<AnimatedSprite2D>("Body/AnimatedSprite2D");
 		_body ??= GetNode<Node2D>("Body");
-		_weaponNode ??= GetNode<Node2D>("Body/WeaponNode");
+		WeaponNode ??= GetNode<Node2D>("Body/WeaponNode");
 
 		Game.Player = this;
 
@@ -37,7 +37,7 @@ public partial class Player : CharacterBody2D, IAttack
 	private void OnPlayerDeath()
 	{
 		GD.Print($"{Game.Player.Name} died");
-		_weaponNode.Hide();
+		WeaponNode.Hide();
 		_anim.Play("death");
 	}
 	
@@ -117,7 +117,7 @@ public partial class Player : CharacterBody2D, IAttack
 
 	private void AnimPlay()
 	{
-		_weaponNode.ZIndex = 1;
+		WeaponNode.ZIndex = 1;
 		// 在动画脚本中根据方向切换动画
 		switch (GetCardinalDirection())
 		{
@@ -131,7 +131,7 @@ public partial class Player : CharacterBody2D, IAttack
 				break;
 			case CardinalDirection.Up:
 				_anim.Play("up_move");
-				_weaponNode.ZIndex = 0;
+				WeaponNode.ZIndex = 0;
 				break;
 			case CardinalDirection.Down:
 				_anim.Play("down_move");
@@ -139,7 +139,7 @@ public partial class Player : CharacterBody2D, IAttack
 		}
 		
 		var v2 = GetGlobalMousePosition();
-		_weaponNode.LookAt(v2);
+		WeaponNode.LookAt(v2);
 
 		if (v2.X > Position.X && !Mathf.IsEqualApprox(_body.Scale.X, 1)) // 武器朝向右侧
 		{

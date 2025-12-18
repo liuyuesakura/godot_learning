@@ -3,8 +3,9 @@
 [ext_resource type="Texture2D" uid="uid://rsfj2l2m4kxo" path="res://texture/Guns/gun1.png" id="1_qficx"]
 [ext_resource type="Script" uid="uid://j6gv3oshny2c" path="res://scene/weapon/BaseWeapon.cs" id="2_d1kll"]
 
-[node name="BaseWeapon" type="Node2D"]
+[node name="BaseWeapon" type="Node2D" node_paths=PackedStringArray("WeaponSprite")]
 script = ExtResource("2_d1kll")
+WeaponSprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(4, 0)

@@ -1,9 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://w6lmknt7pssx"]
+[gd_scene load_steps=5 format=3 uid="uid://w6lmknt7pssx"]
 
 [ext_resource type="PackedScene" uid="uid://dr2suvocq6a4" path="res://scene/main.tscn" id="1_kwx10"]
 [ext_resource type="Script" uid="uid://boswoo4he0bja" path="res://ui/MainUI.cs" id="1_tk2vh"]
 
-[node name="MainUi" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cr80g"]
+bg_color = Color(0.22001559, 0.67357546, 0.69625133, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tk2vh"]
+bg_color = Color(0.91590345, 0.41946995, 0.46198803, 1)
+
+[node name="MainUi" type="Control" node_paths=PackedStringArray("UIRoot")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,40 +17,48 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tk2vh")
+UIRoot = NodePath("MainUiCanvasLayer")
 
 [node name="Main" parent="." instance=ExtResource("1_kwx10")]
+visibility_layer = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 35.0
-offset_top = -247.0
-offset_right = 231.0
-offset_bottom = -35.0
-grow_vertical = 0
+[node name="MainUiCanvasLayer" type="CanvasLayer" parent="."]
+layer = 2
 
-[node name="StartBtn" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 4
-text = "start"
-
-[node name="ExitBtn" type="Button" parent="VBoxContainer"]
-layout_mode = 2
-text = "exit"
-
-[node name="Label" type="Label" parent="."]
-layout_mode = 1
+[node name="Label" type="Label" parent="MainUiCanvasLayer"]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -58.0
-offset_top = -154.0
-offset_right = 73.0
-offset_bottom = -131.0
+offset_left = -65.5
+offset_top = -11.5
+offset_right = 65.5
+offset_bottom = 11.5
 grow_horizontal = 2
 grow_vertical = 2
 text = "Vampire Survival"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainUiCanvasLayer"]
+visibility_layer = 2
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -212.0
+offset_right = 196.0
+grow_vertical = 0
+
+[node name="StartBtn" type="Button" parent="MainUiCanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cr80g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tk2vh")
+text = "start"
+
+[node name="ExitBtn" type="Button" parent="MainUiCanvasLayer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/pressed = SubResource("StyleBoxFlat_cr80g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tk2vh")
+text = "exit"
+
+[connection signal="pressed" from="MainUiCanvasLayer/VBoxContainer/StartBtn" to="." method="_on_start_btn_pressed"]
+[connection signal="pressed" from="MainUiCanvasLayer/VBoxContainer/ExitBtn" to="." method="_on_exit_btn_pressed"]

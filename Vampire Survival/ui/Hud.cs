@@ -14,8 +14,8 @@ public partial class Hud : Control
     public override void _Ready()
     {
         HpBar = GetNode<ProgressBar>("HpHUD/HpBar");
-        HpBar.Value = Game.Player.PlayerData.CurrentHp;
-        HpBar.MaxValue = Game.Player.PlayerData.MaxHp;
+        //HpBar.Value = Game.Player.PlayerData.CurrentHp; // make sure the loading chain is robust.
+        // HpBar.MaxValue = Game.Player.PlayerData.MaxHp; 
 
         Game.PlayerManager.OnPlayerHpChanged += PlayerHpChangedOnHud;
         

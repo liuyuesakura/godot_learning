@@ -1,6 +1,8 @@
-[gd_scene load_steps=5 format=4 uid="uid://dr2suvocq6a4"]
+[gd_scene load_steps=7 format=4 uid="uid://dr2suvocq6a4"]
 
 [ext_resource type="Texture2D" uid="uid://cm2flgvreba5s" path="res://texture/tiles.png" id="1_p23b3"]
+[ext_resource type="Script" uid="uid://104jss03crnd" path="res://scene/Main.cs" id="1_wp4xf"]
+[ext_resource type="PackedScene" uid="uid://jh0yyh3tkxhq" path="res://scene/player/player.tscn" id="2_v0l8b"]
 [ext_resource type="PackedScene" uid="uid://ipu42g3ilmys" path="res://ui/CanvasLayer.tscn" id="4_brvut"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e426j"]
@@ -367,10 +369,14 @@ texture = ExtResource("1_p23b3")
 [sub_resource type="TileSet" id="TileSet_f38pd"]
 sources/0 = SubResource("TileSetAtlasSource_e426j")
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" node_paths=PackedStringArray("CanvasLayer")]
+script = ExtResource("1_wp4xf")
+PlayerPrefab = ExtResource("2_v0l8b")
+CanvasLayer = NodePath("CanvasLayer")
 
 [node name="Block" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAAEAAUAAAAUAAEAAAAEAAYAAAAUAAIAAAAFAAUAAAAVAAEAAAAFAAYAAAAVAAIAAAAGAAcAAAAUAAEAAAAGAAgAAAAUAAIAAAAHAAcAAAAVAAEAAAAHAAgAAAAVAAIAAAAIAAkAAAAUAAEAAAAIAAoAAAAUAAIAAAAJAAkAAAAVAAEAAAAJAAoAAAAVAAIAAAAKAAsAAAAHAAQAAAAKAAwAAAAHAAUAAAALAAsAAAAIAAQAAAALAAwAAAAIAAUAAAAMAAwAAAAHAAUAAAANAAwAAAAIAAUAAAAOAAwAAAAJAAUAAAAPAAwAAAAKAAUAAAAQAAwAAAALAAUAAAARAAwAAAAMAAUAAAASAAwAAAANAAUAAAATAAwAAAAOAAUAAAAUAAwAAAAPAAUAAAAVAAwAAAAQAAUAAAAWAAwAAAARAAUAAAAXAAwAAAASAAUAAAAYAAwAAAATAAUAAAAZAAwAAAAUAAUAAAAaAAwAAAAVAAUAAAAbAAwAAAAWAAUAAAAcAAwAAAAXAAUAAAAQAAkAAAAOAAYAAAAQAAoAAAAOAAcAAAAQAAsAAAAOAAgAAAARAAkAAAAPAAYAAAARAAoAAAAPAAcAAAARAAsAAAAPAAgAAAASAAkAAAAQAAYAAAASAAoAAAAQAAcAAAASAAsAAAAQAAgAAAATAAkAAAARAAYAAAATAAoAAAARAAcAAAATAAsAAAARAAgAAAA=")
 tile_set = SubResource("TileSet_f38pd")
 
 [node name="CanvasLayer" parent="." instance=ExtResource("4_brvut")]
+visible = false

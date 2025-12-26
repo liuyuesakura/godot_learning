@@ -78,4 +78,11 @@ public partial class PlayerManager : Node
 
 	[Signal]
 	public delegate void OnWeaponChangedEventHandler(BaseWeapon weapon);
+	
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	[Signal]
+	public delegate void OnGameStartEventHandler();
 }

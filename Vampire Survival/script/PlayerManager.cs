@@ -7,13 +7,15 @@ public partial class PlayerManager : Node
 	// C# convention uses PascalCase for properties.
 	public PlayerData PlayerData { get; private set; }
 
-	private static PackedScene _pistol;
+	private PackedScene _pistol;
+
+	public PackedScene PlayerScene;
 
 	// 1. Define signals using delegates with the [Signal] attribute.
 	//    C# naming conventions prefer PascalCase for signals and events.
 	[Signal]
 	public delegate void OnPlayerHpChangedEventHandler(int current, int max);
-
+	
 	[Signal]
 	public delegate void OnPlayerDeathEventHandler();
 
@@ -21,6 +23,7 @@ public partial class PlayerManager : Node
 	public override void _Ready()
 	{
 		_pistol = GD.Load<PackedScene>("res://scene/weapon/Pistol.tscn");
+		PlayerScene = GD.Load<PackedScene>("res://scene/player/player.tscn");
 		// 2. Instantiate the C# class.
 		PlayerData = new PlayerData(this);
 		PlayerData.CurrentHp = PlayerData.MaxHp;

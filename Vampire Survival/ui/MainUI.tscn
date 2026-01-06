@@ -9,7 +9,7 @@ bg_color = Color(0.22001559, 0.67357546, 0.69625133, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tk2vh"]
 bg_color = Color(0.91590345, 0.41946995, 0.46198803, 1)
 
-[node name="MainUi" type="Control" node_paths=PackedStringArray("UIRoot")]
+[node name="MainUi" type="Control" node_paths=PackedStringArray("UiRoot")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -17,7 +17,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_tk2vh")
-UIRoot = NodePath("MainUiCanvasLayer")
+UiRoot = NodePath("MainUiCanvasLayer")
 
 [node name="Main" parent="." instance=ExtResource("1_kwx10")]
 visibility_layer = 2
@@ -25,40 +25,49 @@ visibility_layer = 2
 [node name="MainUiCanvasLayer" type="CanvasLayer" parent="."]
 layer = 2
 
-[node name="Label" type="Label" parent="MainUiCanvasLayer"]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -65.5
-offset_top = -11.5
-offset_right = 65.5
-offset_bottom = 11.5
-grow_horizontal = 2
-grow_vertical = 2
-text = "Vampire Survival"
+[node name="Control" type="Control" parent="MainUiCanvasLayer"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainUiCanvasLayer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainUiCanvasLayer/Control"]
 visibility_layer = 2
+layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -212.0
+offset_top = 108.0
 offset_right = 196.0
+offset_bottom = 320.0
 grow_vertical = 0
 
-[node name="StartBtn" type="Button" parent="MainUiCanvasLayer/VBoxContainer"]
+[node name="StartBtn" type="Button" parent="MainUiCanvasLayer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cr80g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_tk2vh")
 text = "start"
 
-[node name="ExitBtn" type="Button" parent="MainUiCanvasLayer/VBoxContainer"]
+[node name="ExitBtn" type="Button" parent="MainUiCanvasLayer/Control/VBoxContainer"]
 layout_mode = 2
 theme_override_styles/pressed = SubResource("StyleBoxFlat_cr80g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_tk2vh")
 text = "exit"
 
-[connection signal="pressed" from="MainUiCanvasLayer/VBoxContainer/StartBtn" to="." method="_on_start_btn_pressed"]
-[connection signal="pressed" from="MainUiCanvasLayer/VBoxContainer/ExitBtn" to="." method="_on_exit_btn_pressed"]
+[node name="Label" type="Label" parent="MainUiCanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 254.5
+offset_top = 148.5
+offset_right = 385.5
+offset_bottom = 171.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Vampire Survival"
+
+[connection signal="pressed" from="MainUiCanvasLayer/Control/VBoxContainer/StartBtn" to="." method="_on_start_btn_pressed"]
+[connection signal="pressed" from="MainUiCanvasLayer/Control/VBoxContainer/ExitBtn" to="." method="_on_exit_btn_pressed"]

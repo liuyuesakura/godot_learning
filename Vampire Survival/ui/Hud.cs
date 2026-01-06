@@ -2,6 +2,8 @@ using Godot;
 using System;
 using VampireSurvival.script;
 
+namespace VampireSurvival.UI;
+
 public partial class Hud : Control
 {
     private ProgressBar HpBar { set; get; }

@@ -16,7 +16,10 @@ public partial class Main : Node2D
         Game.PlayerManager.OnGameStart += () =>
         {
             CanvasLayer.Show();
-            Game.Player = PlayerPrefab.Instantiate<Player>();
+            // CreateTween().TweenProperty(CanvasLayer.GetChild<Control>(0), "modulate:a", 255, 1).From(0);
+            
+            AddChild(Game.PlayerManager.PlayerScene.Instantiate<Node2D>());
+            PlayerPrefab.Instantiate<Player>();
         };
     }
 }

@@ -12,7 +12,9 @@ public partial class Hud : Control
     private Label WeaponName  { set; get; }
     
     private TextureRect WeaponTexture  { set; get; }
-    
+
+    private Label LevelName { set; get; }
+
     public override void _Ready()
     {
         HpBar = GetNode<ProgressBar>("HpHUD/HpBar");
@@ -24,6 +26,8 @@ public partial class Hud : Control
         MagazineLabel = GetNode<Label>("WeaponHUD/Magazine");
         WeaponName = GetNode<Label>("WeaponHUD/WeaponName");
         WeaponTexture = GetNode<TextureRect>("WeaponHUD/TextureRect");
+        LevelName = GetNode<Label>("LevelHUD/LevelName");
+        
         Game.PlayerManager.OnBulletCountChanged += BulletCountChangedOnHud;
         Game.PlayerManager.OnMagazineReloadStarted += MagazineReloadStartedOnHud;
         Game.PlayerManager.OnMagazineReloadFinished += MagazineReloadFinishedOnHud;
@@ -32,6 +36,10 @@ public partial class Hud : Control
             WeaponName.Text = weapon.WeaponName;
             WeaponTexture.Texture = weapon.WeaponSprite.Texture;
             BulletCountChangedOnHud(weapon.MagazineCurrentCount, weapon.MagazineMaxSize);
+        };
+        Game.LevelManager.OnLevelChanged += (level, prefix) =>
+        {
+            LevelName.Text = $"{prefix} {level}";
         };
     }
 

@@ -22,6 +22,8 @@ public partial class MainUI : Control
         // we have already added main scene as bg so just send start signal and close mainui scene.
         //GetTree().ChangeSceneToFile("res://scene/main.tscn"); // directly jump to scene.
         Game.PlayerManager.EmitSignal(PlayerManager.SignalName.OnGameStart);
+        Game.LevelManager.SwitchToLevel(1234);
+        // Game.LevelManager.EmitSignal(LevelManager.SignalName.OnLevelChanged, Game.LevelManager.CurrentLevel);
     }
 
     private void TweenCallback()

@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using VampireSurvival.script;
 
@@ -6,6 +7,7 @@ namespace VampireSurvival.scene;
 public partial class Main : Node2D
 {
 
+    [Obsolete]
     [Export] public PackedScene PlayerPrefab;
     
     [Export]
@@ -18,8 +20,8 @@ public partial class Main : Node2D
             CanvasLayer.Show();
             // CreateTween().TweenProperty(CanvasLayer.GetChild<Control>(0), "modulate:a", 255, 1).From(0);
             
-            AddChild(Game.PlayerManager.PlayerScene.Instantiate<Node2D>());
-            PlayerPrefab.Instantiate<Player>();
+            AddChild(Game.PlayerManager.PlayerScene.Instantiate<Player>());
+            // PlayerPrefab.Instantiate<Player>();
         };
     }
 }

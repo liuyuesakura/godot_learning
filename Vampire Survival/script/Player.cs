@@ -4,6 +4,10 @@ namespace VampireSurvival.script;
 
 public partial class Player : CharacterBody2D, IAttack
 {
+	public Player()
+	{
+		GD.Print("Player ctor");
+	}
 	[Export]
 	public float MoveSpeed { get; set; } = 50.0f; // 可通过编辑器调整移动速度
 	
@@ -16,6 +20,7 @@ public partial class Player : CharacterBody2D, IAttack
 	
 	public override void _Ready()
 	{
+		GD.Print("Player _Ready");
 		_anim ??= GetNode<AnimatedSprite2D>("Body/AnimatedSprite2D");
 		_body ??= GetNode<Node2D>("Body");
 		WeaponNode ??= GetNode<Node2D>("Body/WeaponNode");

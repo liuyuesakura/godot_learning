@@ -4,6 +4,10 @@ namespace VampireSurvival.script;
 
 public partial class PlayerManager : Node
 {
+	public PlayerManager()
+	{
+		GD.Print("PlayerManager ctor");
+	}
 	// C# convention uses PascalCase for properties.
 	public PlayerData PlayerData { get; private set; }
 
@@ -22,6 +26,7 @@ public partial class PlayerManager : Node
 	// _ready() becomes _Ready() in C#
 	public override void _Ready()
 	{
+		GD.Print("PlayerManager _Ready");
 		_pistol = GD.Load<PackedScene>("res://scene/weapon/Pistol.tscn");
 		PlayerScene = GD.Load<PackedScene>("res://scene/player/player.tscn");
 		// 2. Instantiate the C# class.

@@ -130,3 +130,10 @@ docker exec redis-cluster-1 redis-cli CLUSTER NODES
 docker exec redis-cluster-1 redis-cli CLUSTER INFO
 
 redis-cli --cluster reshard 192.168.56.11:6379
+
+
+docker exec -it redis-cluster-1 redis-cli --cluster reshard redis-cluster-1:6379 \
+  --cluster-from <REMOVE_NODE_ID> \
+  --cluster-to <TARGET_MASTER_ID> \
+  --cluster-slots 5461 \
+  --cluster-yes

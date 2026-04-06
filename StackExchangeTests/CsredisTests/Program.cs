@@ -18,20 +18,20 @@ var connectionString = redisSection.GetProperty("ConnectionString").GetString();
 var poolSize = redisSection.TryGetProperty("PoolSize", out var poolSizeElement)
     ? poolSizeElement.GetInt32()
     : 4;
-var sentinelEnabled = redisSection.TryGetProperty("SentinelEnabled", out var sentinelEnabledElement) &&
-                      sentinelEnabledElement.GetBoolean();
-var sentinelServiceName = redisSection.TryGetProperty("SentinelServiceName", out var serviceNameElement)
-    ? serviceNameElement.GetString()
-    : null;
-var sentinelEndpoints = redisSection.TryGetProperty("SentinelEndpoints", out var endpointsElement) &&
-                        endpointsElement.ValueKind == JsonValueKind.Array
-    ? endpointsElement.EnumerateArray()
-        .Select(item => item.GetString())
-        .Where(item => !string.IsNullOrWhiteSpace(item))
-        .Cast<string>()
-        .ToArray()
-    : [];
-// 哨兵 pub/sub 与健康检查（CsRedisSentinelManager）测试已关闭；需要时取消注释并恢复 StartAsync。
+// --- 哨兵（Sentinel）连接相关：已全部注释，仅使用 ConnectionString 直连 ---
+// var sentinelEnabled = redisSection.TryGetProperty("SentinelEnabled", out var sentinelEnabledElement) &&
+//                       sentinelEnabledElement.GetBoolean();
+// var sentinelServiceName = redisSection.TryGetProperty("SentinelServiceName", out var serviceNameElement)
+//     ? serviceNameElement.GetString()
+//     : null;
+// var sentinelEndpoints = redisSection.TryGetProperty("SentinelEndpoints", out var endpointsElement) &&
+//                         endpointsElement.ValueKind == JsonValueKind.Array
+//     ? endpointsElement.EnumerateArray()
+//         .Select(item => item.GetString())
+//         .Where(item => !string.IsNullOrWhiteSpace(item))
+//         .Cast<string>()
+//         .ToArray()
+//     : [];
 // var sentinelHealthCheckEnabled = redisSection.TryGetProperty("SentinelHealthCheckEnabled", out var healthCheckEnabledElement)
 //     ? healthCheckEnabledElement.GetBoolean()
 //     : true;
@@ -39,7 +39,7 @@ var sentinelEndpoints = redisSection.TryGetProperty("SentinelEndpoints", out var
 //     ? healthCheckIntervalElement.GetInt32()
 //     : 10;
 
-if (!sentinelEnabled && string.IsNullOrWhiteSpace(connectionString))
+if (string.IsNullOrWhiteSpace(connectionString))
 {
     Console.WriteLine("Redis:ConnectionString is not configured.");
     return;
@@ -48,13 +48,14 @@ if (!sentinelEnabled && string.IsNullOrWhiteSpace(connectionString))
 Console.WriteLine("[CsredisTests] Creating Redis connection pool...");
 Console.Out.Flush();
 
-using var redisPool = sentinelEnabled
-    ? new CsRedisConnectionPool(
-        $"{sentinelServiceName},connectTimeout=5000",
-        sentinelEndpoints,
-        poolSize,
-        readOnly: false)
-    : new CsRedisConnectionPool(connectionString!, poolSize);
+// using var redisPool = sentinelEnabled
+//     ? new CsRedisConnectionPool(
+//         $"{sentinelServiceName},connectTimeout=5000",
+//         sentinelEndpoints,
+//         poolSize,
+//         readOnly: false)
+//     : new CsRedisConnectionPool(connectionString!, poolSize);
+using var redisPool = new CsRedisConnectionPool(connectionString!, poolSize);
 
 RedisHelper.Initialization(redisPool.Client);
 Console.WriteLine("[CsredisTests] RedisHelper initialized.");
@@ -84,7 +85,7 @@ var repository = new CsRedisRepository(redisPool);
 //         TimeSpan.FromSeconds(sentinelHealthCheckIntervalSeconds)).GetAwaiter().GetResult();
 // }
 
-Console.WriteLine($"Redis connected (CSRedis). Sentinel: {sentinelEnabled}.");
+Console.WriteLine("Redis connected (CSRedis). Sentinel: disabled in code.");
 Console.Out.Flush();
 Console.WriteLine($"RedisRepository ready with pool size: {poolSize}.");
 Console.WriteLine("CacheShell (built-in RedisHelper.CacheShell) ready.");
@@ -92,7 +93,7 @@ Console.WriteLine("Tests will repeat every 15 seconds. Press Ctrl+C to stop.");
 while (true)
 {
     Console.WriteLine($"--- Test run @ {DateTime.Now:yyyy-MM-dd HH:mm:ss} ---");
-    RedisReachableNodesReport.Print(sentinelEnabled, connectionString, sentinelEndpoints);
+    RedisReachableNodesReport.Print(connectionString!);
     await RunPipelineTestAsync(repository);
     await RunCacheShellTestAsync();
     await Task.Delay(TimeSpan.FromSeconds(15));

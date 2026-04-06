@@ -137,3 +137,12 @@ docker exec -it redis-cluster-1 redis-cli --cluster reshard redis-cluster-1:6379
   --cluster-to <TARGET_MASTER_ID> \
   --cluster-slots 5461 \
   --cluster-yes
+  
+  
+  ## link
+  
+  https://www.cnblogs.com/linuxk/p/10736780.html
+  
+  https://zhuanlan.zhihu.com/p/145186839
+  
+  https://bbs.huaweicloud.com/blogs/344366

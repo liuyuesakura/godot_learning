@@ -402,24 +402,31 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "C:\\Users\\amerhau\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/workspace/StackExchangeTests/StackExchangeTests.csproj",
+      "projectUniqueName": "D:\\GodotProjects\\godot_learning\\StackExchangeTests\\StackExchangeTests\\StackExchangeTests.csproj",
       "projectName": "StackExchangeTests",
-      "projectPath": "/workspace/StackExchangeTests/StackExchangeTests.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/workspace/StackExchangeTests/obj/",
+      "projectPath": "D:\\GodotProjects\\godot_learning\\StackExchangeTests\\StackExchangeTests\\StackExchangeTests.csproj",
+      "packagesPath": "C:\\Users\\amerhau\\.nuget\\packages\\",
+      "outputPath": "D:\\GodotProjects\\godot_learning\\StackExchangeTests\\StackExchangeTests\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\amerhau\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -468,7 +475,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.419/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.405/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

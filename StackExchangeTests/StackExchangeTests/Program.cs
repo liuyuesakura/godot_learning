@@ -27,12 +27,13 @@ var sentinelEndpoints = redisSection.TryGetProperty("SentinelEndpoints", out var
         .Cast<string>()
         .ToArray()
     : [];
-var sentinelHealthCheckEnabled = redisSection.TryGetProperty("SentinelHealthCheckEnabled", out var healthCheckEnabledElement)
-    ? healthCheckEnabledElement.GetBoolean()
-    : true;
-var sentinelHealthCheckIntervalSeconds = redisSection.TryGetProperty("SentinelHealthCheckIntervalSeconds", out var healthCheckIntervalElement)
-    ? healthCheckIntervalElement.GetInt32()
-    : 10;
+// 哨兵 pub/sub 与健康检查（RedisSentinelManager）测试已关闭；需要时取消注释并恢复 StartAsync。
+// var sentinelHealthCheckEnabled = redisSection.TryGetProperty("SentinelHealthCheckEnabled", out var healthCheckEnabledElement)
+//     ? healthCheckEnabledElement.GetBoolean()
+//     : true;
+// var sentinelHealthCheckIntervalSeconds = redisSection.TryGetProperty("SentinelHealthCheckIntervalSeconds", out var healthCheckIntervalElement)
+//     ? healthCheckIntervalElement.GetInt32()
+//     : 10;
 
 if (!sentinelEnabled && string.IsNullOrWhiteSpace(connectionString))
 {
@@ -47,24 +48,46 @@ var options = sentinelEnabled
 using var redisPool = new RedisConnectionPool(options, poolSize);
 var repository = new RedisRepository(redisPool);
 var cacheShell = new CacheShell(repository, redisPool, message => Console.WriteLine($"[CacheShell] {message}"));
-using var sentinelManager = sentinelEnabled
-    ? CreateSentinelManager(redisPool, sentinelServiceName, sentinelEndpoints)
-    : null;
-
-if (sentinelManager is not null)
-{
-    sentinelManager.MasterDownDetected += message => Console.WriteLine($"[Sentinel] Master down: {message}");
-    sentinelManager.MasterSwitched += message => Console.WriteLine($"[Sentinel] Master switched: {message}");
-    await sentinelManager.StartAsync(
-        sentinelHealthCheckEnabled,
-        TimeSpan.FromSeconds(sentinelHealthCheckIntervalSeconds));
-}
+// using var sentinelManager = sentinelEnabled
+//     ? CreateSentinelManager(redisPool, sentinelServiceName, sentinelEndpoints)
+//     : null;
+//
+// if (sentinelManager is not null)
+// {
+//     sentinelManager.MasterDownDetected += message => Console.WriteLine($"[Sentinel] Master down: {message}");
+//     sentinelManager.MasterSwitched += message => Console.WriteLine($"[Sentinel] Master switched: {message}");
+//     await sentinelManager.StartAsync(
+//         sentinelHealthCheckEnabled,
+//         TimeSpan.FromSeconds(sentinelHealthCheckIntervalSeconds));
+// }
 
 Console.WriteLine($"Redis connected. Endpoint count: {options.EndPoints.Count}.");
 Console.WriteLine($"RedisRepository ready with pool size: {poolSize}.");
 Console.WriteLine($"CacheShell ready: {cacheShell.GetType().Name}.");
-await RunPipelineTestAsync(repository);
-await RunCacheShellTestAsync(cacheShell);
+Console.WriteLine("Tests will repeat every 15 seconds. Press Ctrl+C to stop.");
+while (true)
+{
+    try
+    {
+        Console.WriteLine($"--- Test run @ {DateTime.Now:yyyy-MM-dd HH:mm:ss} ---");
+        var anyReachable = await RedisReachableNodesReport.PrintAsync(sentinelEnabled, connectionString, sentinelEndpoints);
+        if (!anyReachable)
+        {
+            Console.WriteLine("[MainLoop] No reachable node in topology probe; skipping Pipeline/CacheShell. Retry in 3s.");
+            await Task.Delay(TimeSpan.FromSeconds(3));
+            continue;
+        }
+
+        await RunPipelineTestAsync(repository);
+        await RunCacheShellTestAsync(cacheShell);
+        await Task.Delay(TimeSpan.FromSeconds(15));
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"[MainLoop] Redis/test error (will retry): {ex.GetType().Name}: {ex.Message}");
+        await Task.Delay(TimeSpan.FromSeconds(3));
+    }
+}
 
 static ConfigurationOptions CreateSentinelRedisOptions(string? serviceName, string[] endpoints)
 {
@@ -93,38 +116,38 @@ static ConfigurationOptions CreateSentinelRedisOptions(string? serviceName, stri
     return options;
 }
 
-static RedisSentinelManager CreateSentinelManager(
-    RedisConnectionPool pool,
-    string? serviceName,
-    string[] endpoints)
-{
-    if (string.IsNullOrWhiteSpace(serviceName))
-    {
-        throw new InvalidOperationException("Redis:SentinelServiceName is required when Sentinel is enabled.");
-    }
-
-    if (endpoints.Length == 0)
-    {
-        throw new InvalidOperationException("Redis:SentinelEndpoints is required when Sentinel is enabled.");
-    }
-
-    var sentinelOptions = new ConfigurationOptions
-    {
-        AbortOnConnectFail = false,
-        TieBreaker = string.Empty
-    };
-
-    foreach (var endpoint in endpoints)
-    {
-        sentinelOptions.EndPoints.Add(endpoint);
-    }
-
-    return new RedisSentinelManager(
-        sentinelOptions,
-        serviceName,
-        pool,
-        message => Console.WriteLine($"[Sentinel] {message}"));
-}
+// static RedisSentinelManager CreateSentinelManager(
+//     RedisConnectionPool pool,
+//     string? serviceName,
+//     string[] endpoints)
+// {
+//     if (string.IsNullOrWhiteSpace(serviceName))
+//     {
+//         throw new InvalidOperationException("Redis:SentinelServiceName is required when Sentinel is enabled.");
+//     }
+//
+//     if (endpoints.Length == 0)
+//     {
+//         throw new InvalidOperationException("Redis:SentinelEndpoints is required when Sentinel is enabled.");
+//     }
+//
+//     var sentinelOptions = new ConfigurationOptions
+//     {
+//         AbortOnConnectFail = false,
+//         TieBreaker = string.Empty
+//     };
+//
+//     foreach (var endpoint in endpoints)
+//     {
+//         sentinelOptions.EndPoints.Add(endpoint);
+//     }
+//
+//     return new RedisSentinelManager(
+//         sentinelOptions,
+//         serviceName,
+//         pool,
+//         message => Console.WriteLine($"[Sentinel] {message}"));
+// }
 
 static async Task RunPipelineTestAsync(RedisRepository repository)
 {

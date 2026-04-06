@@ -1,6 +1,6 @@
 services:
   redis-master:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: redis-master
     command: ["redis-server", "--appendonly", "yes"]
     ports:
@@ -9,7 +9,7 @@ services:
       - redis-net
 
   redis-replica-1:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: redis-replica-1
     depends_on:
       - redis-master
@@ -20,7 +20,7 @@ services:
       - redis-net
 
   redis-replica-2:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: redis-replica-2
     depends_on:
       - redis-master
@@ -31,7 +31,7 @@ services:
       - redis-net
 
   redis-sentinel:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: redis-sentinel
     depends_on:
       - redis-master
@@ -55,14 +55,15 @@ services:
       - redis-net
 
   app:
-    image: mcr.microsoft.com/dotnet/runtime:8.0
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.stackexchange
+    image: stackexchange-tests-app:local
     container_name: stackexchange-tests-app
     depends_on:
       - redis-sentinel
-    working_dir: /workspace/StackExchangeTests
-    volumes:
-      - ./:/workspace
-    command: ["dotnet", "/workspace/StackExchangeTests/bin/Debug/net8.0/StackExchangeTests.dll"]
+    working_dir: /app
+    command: ["dotnet", "StackExchangeTests.dll"]
     networks:
       - redis-net
 

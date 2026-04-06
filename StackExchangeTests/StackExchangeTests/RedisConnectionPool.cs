@@ -4,6 +4,7 @@ using StackExchange.Redis;
 public sealed class RedisConnectionPool : IDisposable
 {
     private readonly object _syncRoot = new();
+    private int _interactiveReconnectRunning;
     private ConfigurationOptions _options;
     private ConnectionMultiplexer[] _connectionArray;
     private readonly int _poolSize;
@@ -24,7 +25,7 @@ public sealed class RedisConnectionPool : IDisposable
 
         _poolSize = poolSize;
         _options = CloneOptions(options);
-        _connectionArray = CreateConnections(_options, _poolSize);
+        _connectionArray = CreateConnectionMultiplexers(_options, _poolSize, shortReconnectWindow: false);
     }
 
     public IDatabase GetDatabase(int db = -1)
@@ -40,7 +41,7 @@ public sealed class RedisConnectionPool : IDisposable
         ThrowIfDisposed();
         lock (_syncRoot)
         {
-            var newConnections = CreateConnections(_options, _poolSize);
+            var newConnections = CreateConnectionMultiplexers(_options, _poolSize, shortReconnectWindow: true);
             SwapConnections(newConnections);
         }
     }
@@ -51,7 +52,7 @@ public sealed class RedisConnectionPool : IDisposable
         lock (_syncRoot)
         {
             _options = CloneOptions(options);
-            var newConnections = CreateConnections(_options, _poolSize);
+            var newConnections = CreateConnectionMultiplexers(_options, _poolSize, shortReconnectWindow: false);
             SwapConnections(newConnections);
         }
     }
@@ -82,15 +83,78 @@ public sealed class RedisConnectionPool : IDisposable
         }
     }
 
-    private static ConnectionMultiplexer[] CreateConnections(ConfigurationOptions options, int poolSize)
+    private ConnectionMultiplexer[] CreateConnectionMultiplexers(ConfigurationOptions options, int poolSize, bool shortReconnectWindow)
     {
         var array = new ConnectionMultiplexer[poolSize];
         for (var i = 0; i < poolSize; i++)
         {
-            array[i] = ConnectionMultiplexer.Connect(CloneOptions(options));
+            var mux = ConnectMultiplexerWithFailoverRetry(options, shortReconnectWindow);
+            array[i] = mux;
+            mux.ConnectionFailed += (_, a) =>
+            {
+                if (a.ConnectionType == ConnectionType.Interactive &&
+                    (a.FailureType == ConnectionFailureType.UnableToConnect ||
+                     a.FailureType == ConnectionFailureType.SocketClosed))
+                {
+                    ScheduleDebouncedInteractiveReconnect(a.FailureType, a.EndPoint?.ToString());
+                }
+            };
         }
 
         return array;
+    }
+
+    /// <summary>故障转移时 Connect 可能短暂失败；首次建连用略多重试，ForceReconnect 用短重试避免与 ConnectionFailed 风暴叠加成“无限重试”。</summary>
+    private static ConnectionMultiplexer ConnectMultiplexerWithFailoverRetry(ConfigurationOptions options, bool shortReconnectWindow)
+    {
+        var maxAttempts = shortReconnectWindow ? 3 : 5;
+        var maxBackoffMs = shortReconnectWindow ? 1200 : 3000;
+        Exception? last = null;
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            try
+            {
+                return ConnectionMultiplexer.Connect(CloneOptions(options));
+            }
+            catch (Exception ex)
+            {
+                last = ex;
+                if (attempt >= maxAttempts)
+                {
+                    break;
+                }
+
+                Thread.Sleep(Math.Min(100 * attempt, maxBackoffMs));
+            }
+        }
+
+        throw new InvalidOperationException(
+            $"Could not connect to Redis after {maxAttempts} attempts (failover / Sentinel window).",
+            last);
+    }
+
+    private void ScheduleDebouncedInteractiveReconnect(ConnectionFailureType failureType, string? endPoint)
+    {
+        if (Interlocked.CompareExchange(ref _interactiveReconnectRunning, 1, 0) != 0)
+        {
+            return;
+        }
+
+        _ = Task.Run(() =>
+        {
+            try
+            {
+                ForceReconnect();
+            }
+            catch
+            {
+                // Interactive reconnect best-effort; next failure can retry.
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _interactiveReconnectRunning, 0);
+            }
+        });
     }
 
     private static ConfigurationOptions CloneOptions(ConfigurationOptions options) =>

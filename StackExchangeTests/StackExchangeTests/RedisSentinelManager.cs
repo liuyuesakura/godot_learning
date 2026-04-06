@@ -62,7 +62,8 @@ public sealed class RedisSentinelManager : IDisposable
     private void OnSentinelMessage(RedisChannel channel, RedisValue message)
     {
         var payload = message.ToString();
-        if (!IsRelatedToService(payload))
+        var related = IsRelatedToService(payload);
+        if (!related)
         {
             return;
         }

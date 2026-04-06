@@ -1,1 +1,5 @@
 /Vampire Survival/ui/Hud.cs.uid
+
+# Build outputs (do not commit)
+**/bin/
+**/obj/

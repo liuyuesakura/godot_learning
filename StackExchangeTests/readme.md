@@ -188,6 +188,10 @@ docker exec -it redis-cluster-1 redis-cli --cluster reshard redis-cluster-1:6379
   
   docker exec -it redis-cluster-1 redis-cli --cluster reshard redis-cluster-1:6379 --cluster-from c1e7c11e52a5ac7a9a167c6541d52a372c82abd0 --cluster-to 2136a03050b48e8364c8d87e2cfab14a200e7246 --cluster-slots 5461 --cluster-yes
     
+    
+    docker logs -f stackexchange-tests-app
+    docker logs -f csredis-tests-app
+    
   
   ## link
   

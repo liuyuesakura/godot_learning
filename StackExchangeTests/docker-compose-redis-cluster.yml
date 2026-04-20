@@ -274,6 +274,22 @@ services:
     networks:
       - redis-cluster-net
 
+  freeredis-tests-app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.freeredis
+    image: freeredis-tests-app:local
+    container_name: freeredis-tests-app
+    depends_on:
+      redis-cluster-init:
+        condition: service_completed_successfully
+    working_dir: /app
+    tty: true
+    stdin_open: true
+    command: ["dotnet", "FreeRedisTests.dll"]
+    networks:
+      - redis-cluster-net
+
 networks:
   redis-cluster-net:
     driver: bridge

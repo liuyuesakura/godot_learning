@@ -5,6 +5,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <DockerPublishDir>$(MSBuildThisFileDirectory)../docker/publish/csredis</DockerPublishDir>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,5 +19,15 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\docker\Dockerfile.csredis">
+        <Link>Dockerfile.csredis</Link>
+      </Content>
+    </ItemGroup>
+
+    <Target Name="PublishToDocker" AfterTargets="Build" Condition="'$(PublishToDocker)' != 'false'">
+        <Exec Command="dotnet publish &quot;$(MSBuildProjectFullPath)&quot; --no-build -c $(Configuration) -o &quot;$(DockerPublishDir)&quot;" />
+    </Target>
 
 </Project>

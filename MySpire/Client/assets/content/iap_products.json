@@ -1,0 +1,67 @@
+{
+  "products": [
+    {
+      "sku": "unlock_watcher",
+      "apple_id": "com.myspire.unlock_watcher",
+      "type": "non_consumable",
+      "display_name": "观心者 · 紫衣",
+      "description": "解锁第四位可选角色，掌握姿态切换与神格之力",
+      "price_usd": 2.99,
+      "icon": "\u{1F441}\u{FE0F}",
+      "category": "character"
+    },
+    {
+      "sku": "remove_ads",
+      "apple_id": "com.myspire.remove_ads",
+      "type": "non_consumable",
+      "display_name": "去广告",
+      "description": "永久移除主菜单与结算页面的广告展示",
+      "price_usd": 1.99,
+      "icon": "\u{1F6AB}",
+      "category": "feature"
+    },
+    {
+      "sku": "gold_pack_small",
+      "apple_id": "com.myspire.gold_small",
+      "type": "consumable",
+      "display_name": "金币包 · 小",
+      "description": "获得 500 金币，可在商店购买卡牌与遗物",
+      "price_usd": 0.99,
+      "icon": "\u{1F4B0}",
+      "category": "currency",
+      "reward_gold": 500
+    },
+    {
+      "sku": "gold_pack_large",
+      "apple_id": "com.myspire.gold_large",
+      "type": "consumable",
+      "display_name": "金币包 · 大",
+      "description": "获得 2500 金币，性价比更高",
+      "price_usd": 3.99,
+      "icon": "\u{1F4B0}",
+      "category": "currency",
+      "reward_gold": 2500
+    },
+    {
+      "sku": "revive_token",
+      "apple_id": "com.myspire.revive_token",
+      "type": "consumable",
+      "display_name": "续命币",
+      "description": "战斗失败时自动复活，恢复 50% 生命值",
+      "price_usd": 0.99,
+      "icon": "\u{1F495}",
+      "category": "consumable",
+      "max_stack": 3
+    },
+    {
+      "sku": "card_skin_gold",
+      "apple_id": "com.myspire.card_skin_gold",
+      "type": "non_consumable",
+      "display_name": "金色卡背",
+      "description": "为所有卡牌装备金色边框装饰",
+      "price_usd": 1.99,
+      "icon": "\u{2728}",
+      "category": "cosmetic"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "enemies": [
+    {
+      "id": "jaw_worm",
+      "name": "颚虫",
+      "hp": [40, 44],
+      "pattern": "random",
+      "moves": [
+        { "name": "撕咬", "type": "attack", "damage": 11 },
+        { "name": "乱击", "type": "attack_defend", "damage": 7, "block": 5 },
+        { "name": "咆哮", "type": "buff", "strength": 3, "block": 6 }
+      ]
+    },
+    {
+      "id": "cultist",
+      "name": "邪教徒",
+      "hp": [46, 50],
+      "pattern": "random",
+      "first": 1,
+      "moves": [
+        { "name": "暗黑打击", "type": "attack", "damage": 6 },
+        { "name": "仪式", "type": "buff", "strength": 3 }
+      ]
+    },
+    {
+      "id": "acid_slime",
+      "name": "酸液史莱姆",
+      "hp": [30, 34],
+      "pattern": "random",
+      "moves": [
+        { "name": "腐蚀喷吐", "type": "attack", "damage": 7 },
+        { "name": "舔舐", "type": "debuff", "weak": 1 },
+        { "name": "撞击", "type": "attack", "damage": 9 }
+      ]
+    },
+    {
+      "id": "louse",
+      "name": "虱虫",
+      "hp": [10, 15],
+      "pattern": "random",
+      "moves": [
+        { "name": "啃咬", "type": "attack", "damage": 6 },
+        { "name": "吐丝", "type": "debuff", "weak": 1 }
+      ]
+    },
+    {
+      "id": "gremlin_nob",
+      "name": "地精头目",
+      "hp": [80, 84],
+      "pattern": "random",
+      "first": 0,
+      "moves": [
+        { "name": "怒吼", "type": "buff", "strength": 2 },
+        { "name": "猛砸", "type": "attack", "damage": 14 },
+        { "name": "颅击", "type": "attack", "damage": 6 }
+      ]
+    },
+    {
+      "id": "sentry",
+      "name": "哨卫",
+      "hp": [38, 42],
+      "pattern": "random",
+      "moves": [
+        { "name": "光束", "type": "attack", "damage": 9 },
+        { "name": "充能", "type": "block", "block": 7 }
+      ]
+    },
+    {
+      "id": "the_guardian",
+      "name": "守卫者",
+      "hp": [105, 110],
+      "pattern": "random",
+      "first": 2,
+      "moves": [
+        { "name": "猛击", "type": "attack", "damage": 10 },
+        { "name": "横扫", "type": "attack", "damage": 16 },
+        { "name": "姿态切换", "type": "buff", "strength": 2, "block": 8 }
+      ]
+    }
+  ],
+  "encounters": {
+    "normal": [
+      ["jaw_worm"],
+      ["cultist"],
+      ["acid_slime"],
+      ["louse", "louse"],
+      ["cultist", "louse"],
+      ["acid_slime", "louse"]
+    ],
+    "elite": [
+      ["gremlin_nob"],
+      ["sentry", "sentry"]
+    ],
+    "boss": [
+      ["the_guardian"]
+    ]
+  }
+}

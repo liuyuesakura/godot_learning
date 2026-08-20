@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MySpire · 竖屏UI原型</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ========== Design Tokens ========== */
+:root {
+  --bg-deep: #080814;
+  --bg-dark: #0d1b3e;
+  --bg-mid: #142a5c;
+  --bg-panel: rgba(13, 27, 62, 0.88);
+  --bg-panel-2: rgba(22, 38, 79, 0.75);
+  --bg-panel-3: rgba(30, 50, 100, 0.6);
+  --gold: #c9a84c;
+  --gold-l: #e6c659;
+  --gold-b: #f0d77b;
+  --gold-d: #9a7e3a;
+  --blue: #4a90d9;
+  --blue-l: #6ab0f5;
+  --blue-d: #2c6fb5;
+  --purple: #9d6ec9;
+  --purple-d: #6b4c9a;
+  --red: #d4453e;
+  --red-l: #e74c3c;
+  --red-d: #a93226;
+  --green: #4caf50;
+  --green-d: #2e7d32;
+  --teal: #26a69a;
+  --text: #e8e8e8;
+  --text-gold: #f0d77b;
+  --text-dim: #8a8a9a;
+  --text-muted: #5a5a6a;
+  --font-h: 'Cinzel', 'Noto Serif SC', serif;
+  --font-b: 'Noto Sans SC', system-ui, sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-lg: 16px;
+  --shadow-glow-gold: 0 0 12px rgba(201,168,76,0.25);
+  --shadow-glow-blue: 0 0 12px rgba(74,144,217,0.3);
+  --shadow-card: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* ========== Reset ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-b);background:#1a1a2e;color:var(--text);display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px 0 60px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,#1a2f5c 0%,#0a0a1a 70%);z-index:-1}
+
+/* ========== Device Frame ========== */
+.device{width:390px;height:844px;border-radius:44px;background:#000;padding:10px;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 2px #2a2a3e;position:relative;overflow:hidden}
+.device-screen{width:100%;height:100%;border-radius:36px;overflow:hidden;position:relative;background:var(--bg-deep)}
+
+/* ========== Screen System ========== */
+.screen{position:absolute;inset:0;display:none;flex-direction:column;overflow:hidden}
+.screen.active{display:flex;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+/* ========== Gold Ornamental Frame ========== */
+.ornate-border{border:1.5px solid var(--gold);border-radius:var(--radius);box-shadow:0 0 0 1px rgba(201,168,76,0.15),inset 0 1px 0 rgba(255,255,255,0.05)}
+.ornate-border::before,.ornate-border::after{content:'';position:absolute;width:12px;height:12px;border:2px solid var(--gold-l);pointer-events:none}
+.ornate-border::before{top:-2px;left:-2px;border-right:none;border-bottom:none;border-top-left-radius:4px}
+.ornate-border::after{bottom:-2px;right:-2px;border-left:none;border-top:none;border-bottom-right-radius:4px}
+
+/* ========== Panels ========== */
+.panel{background:var(--bg-panel);border:1px solid rgba(201,168,76,0.25);border-radius:var(--radius);backdrop-filter:blur(8px);position:relative}
+.panel-glow{box-shadow:var(--shadow-glow-gold),inset 0 1px 0 rgba(255,255,255,0.03)}
+
+/* ========== Buttons ========== */
+.btn{font-family:var(--font-b);font-weight:700;border:none;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px;user-select:none}
+.btn-gold{background:linear-gradient(180deg,var(--gold-l) 0%,var(--gold) 50%,var(--gold-d) 100%);color:#1a1a2e;border:1px solid var(--gold-b);border-radius:var(--radius-sm);box-shadow:0 2px 8px rgba(201,168,76,0.3),inset 0 1px 0 rgba(255,255,255,0.4);padding:12px 24px;font-size:14px}
+.btn-gold:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn-gold:active{transform:translateY(0)}
+.btn-dark{background:linear-gradient(180deg,var(--bg-mid) 0%,var(--bg-dark) 100%);color:var(--text-gold);border:1px solid rgba(201,168,76,0.3);border-radius:var(--radius-sm);padding:10px 20px;font-size:13px}
+.btn-dark:hover{border-color:var(--gold);box-shadow:var(--shadow-glow-gold)}
+.btn-ghost{background:transparent;color:var(--text-dim);border:1px solid rgba(138,138,154,0.3);border-radius:var(--radius-sm);padding:8px 16px;font-size:12px}
+.btn-ghost:hover{color:var(--text);border-color:var(--text-dim)}
+
+/* ========== HP Bar ========== */
+.hp-bar{height:14px;background:rgba(0,0,0,0.6);border-radius:7px;border:1px solid rgba(201,168,76,0.2);overflow:hidden;position:relative}
+.hp-fill{height:100%;background:linear-gradient(180deg,var(--red-l) 0%,var(--red-d) 100%);border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.15);transition:width .3s}
+.hp-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.8)}
+
+/* ========== Energy Gem ========== */
+.energy-gem{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--blue-l),var(--blue),var(--blue-d));border:2px solid var(--blue-l);box-shadow:0 0 12px rgba(74,144,217,0.4),inset 0 0 6px rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);font-size:16px;flex-shrink:0}
+
+/* ========== Block Shield ========== */
+.block-shield{display:inline-flex;align-items:center;gap:3px;background:rgba(38,166,154,0.15);border:1px solid var(--teal);border-radius:4px;padding:2px 6px;font-size:11px;font-weight:700;color:var(--teal)}
+
+/* ========== Intent Icons ========== */
+.intent{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.intent-attack{background:rgba(212,69,62,0.2);border:1px solid var(--red);color:var(--red-l)}
+.intent-defend{background:rgba(38,166,154,0.15);border:1px solid var(--teal);color:var(--teal)}
+.intent-buff{background:rgba(157,110,201,0.15);border:1px solid var(--purple);color:var(--purple)}
+.intent-unknown{background:rgba(138,138,154,0.1);border:1px solid var(--text-dim);color:var(--text-dim)}
+
+/* ========== Buff/Debuff Chips ========== */
+.buff-chip{display:inline-flex;align-items:center;gap:2px;padding:2px 5px;border-radius:3px;font-size:9px;font-weight:600}
+.buff-pos{background:rgba(76,175,80,0.15);border:1px solid var(--green);color:var(--green)}
+.buff-neg{background:rgba(212,69,62,0.15);border:1px solid var(--red);color:var(--red-l)}
+
+/* ========== Game Card ========== */
+.game-card{width:96px;height:138px;border-radius:8px;position:relative;overflow:hidden;cursor:pointer;transition:transform .2s,box-shadow .2s;flex-shrink:0;border:2px solid;background:linear-gradient(160deg,#1a1a2e 0%,#0f0f1e 100%);box-shadow:var(--shadow-card)}
+.game-card:hover{transform:translateY(-10px) scale(1.06);box-shadow:0 12px 24px rgba(0,0,0,0.6),0 0 16px rgba(201,168,76,0.3);z-index:10}
+.game-card.type-attack{border-color:var(--red-d)}
+.game-card.type-skill{border-color:var(--green-d)}
+.game-card.type-power{border-color:var(--purple-d)}
+.game-card.type-curse{border-color:#5a2d2d}
+.game-card.rarity-common{box-shadow:var(--shadow-card)}
+.game-card.rarity-uncommon{border-width:2px}
+.game-card.rarity-uncommon::after{content:'';position:absolute;inset:0;border-radius:6px;background:linear-gradient(180deg,transparent 70%,rgba(74,144,217,0.08));pointer-events:none}
+.game-card.rarity-rare::after{content:'';position:absolute;inset:0;border-radius:6px;background:linear-gradient(180deg,transparent 70%,rgba(201,168,76,0.1));pointer-events:none}
+.game-card.rarity-rare{border-color:var(--gold)}
+.card-cost{position:absolute;top:5px;left:5px;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--blue-l),var(--blue),var(--blue-d));border:2px solid var(--blue-l);box-shadow:0 0 6px rgba(74,144,217,0.4),inset 0 0 4px rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.5);font-size:14px;z-index:2}
+.card-name{text-align:center;font-size:11px;font-weight:700;padding:5px 4px 3px;color:var(--text-gold);text-shadow:0 1px 2px rgba(0,0,0,0.5);letter-spacing:.5px}
+.card-art{height:52px;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 4px;border-radius:4px;background:rgba(255,255,255,0.03)}
+.card-desc{font-size:9px;text-align:center;padding:4px;line-height:1.35;color:#ccc;margin:0 3px}
+.card-desc .dmg{color:var(--red-l);font-weight:700}
+.card-desc .blk{color:var(--teal);font-weight:700}
+.card-desc .buff{color:var(--green);font-weight:700}
+.card-desc .debuff{color:var(--red);font-weight:700}
+.card-type-label{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+.game-card.unplayable .card-cost{background:radial-gradient(circle at 35% 30%,#555,#333,#222);border-color:#555;box-shadow:none}
+
+/* ========== Top Bar ========== */
+.top-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;background:rgba(8,8,20,0.7);border-bottom:1px solid rgba(201,168,76,0.15);flex-shrink:0;position:relative;z-index:5}
+.top-bar .left,.top-bar .right{display:flex;align-items:center;gap:8px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--text-dim);transition:all .15s}
+.icon-btn:hover{color:var(--gold-l);border-color:var(--gold)}
+.floor-badge{font-family:var(--font-h);font-size:13px;font-weight:600;color:var(--text-gold);padding:2px 10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:4px}
+.top-hp{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600}
+.top-hp .heart{color:var(--red-l);font-size:13px}
+.top-energy{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600}
+.top-energy .bolt{color:var(--blue-l);font-size:13px}
+.gold-coin{display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;color:var(--gold-b)}
+
+/* ========== Prototype Nav ========== */
+.proto-nav{display:flex;gap:6px;margin-top:16px;flex-wrap:wrap;justify-content:center;max-width:390px}
+.proto-nav button{padding:6px 10px;font-size:11px;font-family:var(--font-b);background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.15);color:var(--text-dim);border-radius:4px;cursor:pointer;transition:all .15s}
+.proto-nav button:hover{color:var(--text-gold);border-color:var(--gold-d)}
+.proto-nav button.active{background:rgba(201,168,76,0.15);color:var(--gold-b);border-color:var(--gold)}
+
+/* ========== Screen: Main Menu ========== */
+#screen-menu{background:radial-gradient(ellipse at 50% 30%,#1a2f5c 0%,#080814 70%);justify-content:center;align-items:center}
+.menu-bg-art{position:absolute;inset:0;opacity:.3;background:linear-gradient(180deg,transparent 40%,#080814 90%)}
+.menu-content{position:relative;z-index:2;text-align:center;padding:0 30px}
+.menu-title{font-family:var(--font-h);font-size:38px;font-weight:700;color:var(--gold-b);text-shadow:0 0 20px rgba(201,168,76,0.4),0 2px 4px rgba(0,0,0,0.8);letter-spacing:3px;margin-bottom:4px}
+.menu-subtitle{font-family:var(--font-h);font-size:13px;color:var(--text-dim);letter-spacing:6px;text-transform:uppercase;margin-bottom:50px}
+.menu-buttons{display:flex;flex-direction:column;gap:12px;align-items:center}
+.menu-buttons .btn-gold{width:200px}
+.menu-buttons .btn-dark{width:200px}
+.menu-version{position:absolute;bottom:20px;left:0;right:0;text-align:center;font-size:10px;color:var(--text-muted)}
+
+/* ========== Screen: Character Select ========== */
+#screen-select{background:#080814;overflow:hidden}
+/* --- 立绘背景层（每角色一层，交叉淡入 + Ken Burns 缩放） --- */
+.char-bg{position:absolute;inset:0;opacity:0;transform:scale(1.08);transition:opacity .55s ease,transform 1.2s ease;pointer-events:none}
+.char-bg.active{opacity:1;transform:scale(1)}
+.char-bg .bg-wash{position:absolute;inset:0}
+.char-bg .bg-art{position:absolute;right:-34px;top:80px;font-size:225px;line-height:1;opacity:.92;filter:drop-shadow(0 0 46px rgba(0,0,0,.7))}
+.char-bg .bg-name{position:absolute;left:16px;top:40%;font-family:var(--font-h);font-size:40px;font-weight:700;letter-spacing:10px;color:rgba(255,255,255,.07);writing-mode:vertical-rl;pointer-events:none}
+.char-bg[data-bg="ironclad"] .bg-wash{background:radial-gradient(ellipse at 62% 32%,rgba(150,34,30,.6) 0%,rgba(60,14,12,.5) 45%,#120606 100%)}
+.char-bg[data-bg="silent"] .bg-wash{background:radial-gradient(ellipse at 62% 32%,rgba(28,92,52,.55) 0%,rgba(10,44,24,.5) 45%,#051108 100%)}
+.char-bg[data-bg="defect"] .bg-wash{background:radial-gradient(ellipse at 62% 32%,rgba(42,84,190,.55) 0%,rgba(16,32,78,.55) 45%,#060b1c 100%)}
+.char-bg[data-bg="watcher"] .bg-wash{background:radial-gradient(ellipse at 62% 32%,rgba(118,62,168,.55) 0%,rgba(52,26,84,.55) 45%,#10061e 100%)}
+/* 底部渐变遮罩，保证信息面板可读性 */
+.select-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(8,8,20,.6) 0%,rgba(8,8,20,0) 16%,rgba(8,8,20,0) 42%,rgba(8,8,20,.9) 84%);pointer-events:none;z-index:1}
+.select-header{padding:14px 20px 4px;text-align:center;position:relative;z-index:2}
+.select-header h2{font-family:var(--font-h);font-size:21px;color:var(--gold-b);letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,.8)}
+.select-header p{font-size:11px;color:var(--text-dim);margin-top:3px}
+/* --- 菱形竖向导航网格（紧密贴合的交错菱形链） --- */
+.diamond-nav{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px 0;min-height:0}
+.d-nav-line{position:absolute;top:10px;bottom:10px;left:50%;width:1px;transform:translateX(-.5px);background:linear-gradient(180deg,transparent,rgba(201,168,76,.22) 20%,rgba(201,168,76,.22) 80%,transparent);z-index:0}
+.diamond-wrap{--dx:0px;--s:1;width:56px;height:56px;flex-shrink:0;transform:translateX(var(--dx)) rotate(45deg) scale(var(--s));cursor:pointer;position:relative;z-index:2;transition:transform .25s ease,filter .25s ease}
+.diamond-wrap + .diamond-wrap{margin-top:-16px} /* 中心距 40px ≈ 半对角线 → 菱形边缘相切 */
+.diamond-wrap:hover{--s:1.1}
+.diamond-wrap.selected{--s:1.18;z-index:3}
+.diamond-face{position:absolute;inset:0;background:linear-gradient(135deg,rgba(30,42,80,.92),rgba(10,16,36,.92));border:2px solid rgba(201,168,76,.4);display:flex;align-items:center;justify-content:center;transition:border-color .25s,box-shadow .25s;box-shadow:0 4px 14px rgba(0,0,0,.55)}
+.diamond-icon{transform:rotate(-45deg);font-size:24px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.6))}
+.diamond-wrap:hover .diamond-face{border-color:var(--gold-l);box-shadow:0 0 14px rgba(201,168,76,.35)}
+.diamond-wrap.selected .diamond-face{border-color:var(--gold-b);box-shadow:0 0 20px rgba(201,168,76,.65),0 0 40px rgba(201,168,76,.25),inset 0 0 10px rgba(201,168,76,.18)}
+.diamond-wrap.locked{cursor:not-allowed;filter:grayscale(1) brightness(.6)}
+.diamond-wrap.locked .diamond-icon{font-size:18px}
+.diamond-wrap.locked.shake{animation:dShake .35s ease}
+@keyframes dShake{0%,100%{transform:translateX(var(--dx,0px)) rotate(45deg)}25%{transform:translateX(calc(var(--dx,0px) - 5px)) rotate(45deg)}75%{transform:translateX(calc(var(--dx,0px) + 5px)) rotate(45deg)}}
+/* 随机角色选项：紫色系 + 呼吸光晕 */
+.diamond-wrap.random .diamond-face{background:linear-gradient(135deg,rgba(58,22,92,.95),rgba(12,12,34,.95));border-color:rgba(157,110,201,.55);animation:randPulse 2.2s ease-in-out infinite}
+.diamond-wrap.random:hover .diamond-face{border-color:var(--purple);box-shadow:0 0 16px rgba(157,110,201,.55)}
+.diamond-wrap.random.rolling .diamond-face{border-color:var(--gold-b);animation:randRoll .3s linear infinite}
+@keyframes randPulse{0%,100%{box-shadow:0 4px 14px rgba(0,0,0,.55),0 0 6px rgba(157,110,201,.25)}50%{box-shadow:0 4px 14px rgba(0,0,0,.55),0 0 18px rgba(157,110,201,.6)}}
+@keyframes randRoll{0%{box-shadow:0 0 10px rgba(157,110,201,.6),inset 0 0 8px rgba(157,110,201,.3)}50%{box-shadow:0 0 22px rgba(230,198,89,.7),inset 0 0 10px rgba(230,198,89,.35)}100%{box-shadow:0 0 10px rgba(157,110,201,.6),inset 0 0 8px rgba(157,110,201,.3)}}
+/* --- 角色详情面板 --- */
+.char-detail{position:relative;z-index:2;margin:0 18px 8px;padding:13px 15px;background:rgba(9,15,34,.78);border:1px solid rgba(201,168,76,.32);border-radius:var(--radius);backdrop-filter:blur(6px);box-shadow:0 6px 24px rgba(0,0,0,.5)}
+.char-detail-inner{animation:charIn .4s ease}
+@keyframes charIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.cd-top{display:flex;align-items:baseline;justify-content:space-between}
+.cd-name{font-family:var(--font-h);font-size:19px;font-weight:600;color:var(--gold-b);text-shadow:0 0 10px rgba(201,168,76,.3)}
+.cd-title{font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase}
+.cd-stats{display:flex;gap:7px;margin-top:10px}
+.cd-stat{flex:1;text-align:center;padding:6px 2px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.06);border-radius:6px}
+.cd-stat .v{font-size:13px;font-weight:700;color:var(--text)}
+.cd-stat .l{font-size:8px;color:var(--text-dim);margin-top:2px;letter-spacing:1px}
+.cd-relic{margin-top:9px;padding-top:8px;border-top:1px solid rgba(201,168,76,.15);font-size:10px;color:var(--text-dim);display:flex;gap:6px;align-items:baseline}
+.cd-relic .relic-name{color:var(--gold-l);font-weight:600;flex-shrink:0}
+.select-footer{padding:8px 20px 18px;text-align:center;position:relative;z-index:2}
+
+/* ========== Screen: Combat ========== */
+#screen-combat{background:linear-gradient(180deg,#0a0e1a 0%,#080814 50%,#0a0a14 100%)}
+.combat-enemy-area{flex:0 0 280px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px;position:relative}
+.enemy-card{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
+.enemy-intent-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.enemy-sprite{width:120px;height:120px;border-radius:12px;background:radial-gradient(circle at 50% 40%,rgba(212,69,62,0.15) 0%,transparent 70%);display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;border:1px solid rgba(212,69,62,0.1)}
+.enemy-sprite::before{content:'';position:absolute;inset:0;border-radius:12px;background:radial-gradient(circle at 50% 100%,rgba(212,69,62,0.08) 0%,transparent 60%)}
+.enemy-hp-bar{width:140px;position:relative}
+.enemy-name{font-size:12px;font-weight:600;color:var(--text-dim);text-align:center}
+.enemy-buffs{display:flex;gap:4px;min-height:18px}
+.combat-player-status{display:flex;align-items:center;justify-content:space-between;padding:6px 16px;background:rgba(8,8,20,0.5);border-top:1px solid rgba(201,168,76,0.1);border-bottom:1px solid rgba(201,168,76,0.1);flex-shrink:0}
+.player-left{display:flex;align-items:center;gap:10px}
+.player-hp-mini{display:flex;align-items:center;gap:4px}
+.player-hp-mini .heart{color:var(--red-l);font-size:12px}
+.player-hp-mini .hp-num{font-size:13px;font-weight:700;color:var(--text)}
+.player-right{display:flex;align-items:center;gap:8px}
+.combat-hand-area{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:8px 0}
+.hand-scroll{display:flex;gap:6px;padding:0 10px;overflow-x:auto;scroll-snap-type:x mandatory;justify-content:center}
+.hand-scroll::-webkit-scrollbar{display:none}
+.hand-scroll .game-card{scroll-snap-align:center}
+.combat-bottom-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 16px 12px;flex-shrink:0}
+.btn-end-turn{padding:10px 28px;font-size:13px}
+
+/* ========== Screen: Map ========== */
+#screen-map{background:linear-gradient(180deg,#0a0e1a 0%,#080814 100%)}
+.map-header{padding:12px 20px 4px;text-align:center}
+.map-header h2{font-family:var(--font-h);font-size:18px;color:var(--gold-b)}
+.map-header .act-info{font-size:11px;color:var(--text-dim);margin-top:2px}
+.map-scroll{flex:1;overflow-y:auto;padding:8px 20px}
+.map-scroll::-webkit-scrollbar{width:4px}
+.map-scroll::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.2);border-radius:2px}
+.map-container{display:flex;flex-direction:column;align-items:center;gap:0;position:relative;min-height:100%;padding:20px 0}
+.map-row{display:flex;justify-content:center;gap:40px;position:relative;height:70px;align-items:center}
+.map-node{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all .2s;position:relative;z-index:2;border:2px solid;flex-shrink:0}
+.map-node:hover{transform:scale(1.15)}
+.map-node.current{box-shadow:0 0 16px rgba(201,168,76,0.5);border-color:var(--gold-b);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 12px rgba(201,168,76,0.4)}50%{box-shadow:0 0 20px rgba(201,168,76,0.7)}}
+.map-node.visited{opacity:.35}
+.map-node.node-battle{background:rgba(212,69,62,0.2);border-color:var(--red-d)}
+.map-node.node-elite{background:rgba(156,39,176,0.2);border-color:#9c27b0}
+.map-node.node-shop{background:rgba(201,168,76,0.15);border-color:var(--gold-d)}
+.map-node.node-campfire{background:rgba(255,87,34,0.15);border-color:#e65100}
+.map-node.node-event{background:rgba(33,150,243,0.15);border-color:#1976d2}
+.map-node.node-treasure{background:rgba(255,193,7,0.15);border-color:#ffc107}
+.map-node.node-boss{width:54px;height:54px;font-size:24px;background:rgba(156,39,176,0.25);border-color:#9c27b0}
+.map-connector{position:absolute;width:2px;background:rgba(201,168,76,0.2);z-index:1}
+.map-connector.diagonal{transform-origin:top center}
+.map-legend{display:flex;flex-wrap:wrap;gap:8px;padding:8px 16px;justify-content:center}
+.legend-item{display:flex;align-items:center;gap:3px;font-size:9px;color:var(--text-dim)}
+.legend-dot{width:10px;height:10px;border-radius:50%;border:1px solid}
+
+/* ========== Screen: Card Reward ========== */
+#screen-reward{background:radial-gradient(ellipse at 50% 20%,#1a2f5c 0%,#080814 70%)}
+.reward-header{padding:24px 20px 8px;text-align:center}
+.reward-header h2{font-family:var(--font-h);font-size:22px;color:var(--gold-b);text-shadow:0 0 12px rgba(201,168,76,0.3)}
+.reward-header p{font-size:12px;color:var(--text-dim);margin-top:4px}
+.reward-cards{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:12px 20px}
+.reward-card-wrap{position:relative;cursor:pointer;transition:transform .2s}
+.reward-card-wrap:hover{transform:scale(1.05)}
+.reward-card-wrap .game-card{width:130px;height:184px}
+.reward-card-wrap .game-card .card-name{font-size:13px;padding:6px}
+.reward-card-wrap .game-card .card-art{height:64px;font-size:36px}
+.reward-card-wrap .game-card .card-desc{font-size:11px;padding:6px}
+.reward-card-wrap .rarity-tag{position:absolute;top:-10px;right:-8px;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;z-index:3}
+.rarity-tag.common{background:rgba(138,138,154,0.2);border:1px solid var(--text-dim);color:var(--text-dim)}
+.rarity-tag.uncommon{background:rgba(74,144,217,0.15);border:1px solid var(--blue);color:var(--blue-l)}
+.rarity-tag.rare{background:rgba(201,168,76,0.15);border:1px solid var(--gold);color:var(--gold-b)}
+.reward-footer{padding:12px 20px 24px;text-align:center}
+
+/* ========== Screen: Shop ========== */
+#screen-shop{background:linear-gradient(180deg,#1a1a14 0%,#080814 60%)}
+.shop-header{padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.shop-header h2{font-family:var(--font-h);font-size:18px;color:var(--gold-b)}
+.shop-scroll{flex:1;overflow-y:auto;padding:8px 16px}
+.shop-scroll::-webkit-scrollbar{width:4px}
+.shop-scroll::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.2);border-radius:2px}
+.shop-section{margin-bottom:16px}
+.shop-section-title{font-size:12px;font-weight:600;color:var(--gold-l);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid rgba(201,168,76,0.15)}
+.shop-card-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.shop-item{position:relative;cursor:pointer;transition:transform .15s}
+.shop-item:hover{transform:translateY(-3px)}
+.shop-item .price-tag{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);padding:2px 10px;background:linear-gradient(180deg,var(--gold-l),var(--gold-d));color:#1a1a2e;font-size:11px;font-weight:700;border-radius:4px;border:1px solid var(--gold-b);white-space:nowrap;z-index:3}
+.shop-item.sold{opacity:.4;pointer-events:none}
+.shop-item.sold .price-tag{background:#333;color:#666;border-color:#444}
+.shop-relic-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg-panel);border:1px solid rgba(201,168,76,0.15);border-radius:var(--radius);margin-bottom:8px}
+.relic-icon{width:40px;height:40px;border-radius:8px;background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;border:1px solid rgba(201,168,76,0.2)}
+.relic-info{flex:1}
+.relic-name{font-size:12px;font-weight:600;color:var(--gold-l)}
+.relic-desc{font-size:10px;color:var(--text-dim);margin-top:2px}
+.relic-price{padding:3px 10px;background:linear-gradient(180deg,var(--gold-l),var(--gold-d));color:#1a1a2e;font-size:11px;font-weight:700;border-radius:4px;border:1px solid var(--gold-b)}
+.shop-remove{display:flex;align-items:center;justify-content:space-between;padding:12px;background:var(--bg-panel);border:1px solid rgba(212,69,62,0.2);border-radius:var(--radius)}
+.shop-remove-info{display:flex;align-items:center;gap:10px}
+.shop-remove-info .relic-icon{background:rgba(212,69,62,0.1);border-color:rgba(212,69,62,0.2);font-size:18px}
+.shop-footer{padding:12px 16px 16px}
+
+/* ========== Screen: Campfire ========== */
+#screen-campfire{background:radial-gradient(ellipse at 50% 60%,#2a1505 0%,#080814 70%)}
+.campfire-header{padding:24px 20px 8px;text-align:center}
+.campfire-header h2{font-family:var(--font-h);font-size:22px;color:var(--gold-b)}
+.campfire-visual{height:180px;display:flex;align-items:center;justify-content:center;font-size:72px;position:relative}
+.campfire-visual::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,87,34,0.15) 0%,transparent 60%)}
+.campfire-options{flex:1;display:flex;flex-direction:column;gap:12px;padding:16px 30px;justify-content:center}
+.campfire-option{display:flex;align-items:center;gap:14px;padding:16px;background:var(--bg-panel);border:1px solid rgba(201,168,76,0.2);border-radius:var(--radius);cursor:pointer;transition:all .2s;position:relative}
+.campfire-option:hover{border-color:var(--gold);box-shadow:var(--shadow-glow-gold);transform:translateX(4px)}
+.campfire-option .opt-icon{width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:1px solid rgba(201,168,76,0.2)}
+.campfire-option .opt-icon.rest{background:rgba(76,175,80,0.1);border-color:var(--green-d)}
+.campfire-option .opt-icon.upgrade{background:rgba(74,144,217,0.1);border-color:var(--blue-d)}
+.campfire-option .opt-info h3{font-size:14px;font-weight:600;color:var(--text)}
+.campfire-option .opt-info p{font-size:11px;color:var(--text-dim);margin-top:2px}
+.campfire-hp-display{padding:12px 30px;text-align:center}
+.campfire-hp-display .hp-bar{height:18px;margin-bottom:4px}
+.campfire-hp-display .hp-text{font-size:12px}
+
+/* ========== Screen: Deck View ========== */
+#screen-deck{background:linear-gradient(180deg,#0a0e1a 0%,#080814 100%)}
+.deck-header{padding:16px 20px 8px;display:flex;align-items:center;justify-content:space-between}
+.deck-header h2{font-family:var(--font-h);font-size:18px;color:var(--gold-b)}
+.deck-count{font-size:12px;color:var(--text-dim);padding:2px 10px;background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);border-radius:4px}
+.deck-sort{display:flex;gap:6px;padding:4px 16px 8px}
+.deck-sort .btn-ghost{padding:4px 10px;font-size:10px}
+.deck-sort .btn-ghost.active{background:rgba(201,168,76,0.15);color:var(--gold-b);border-color:var(--gold-d)}
+.deck-grid{flex:1;overflow-y:auto;padding:8px 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;justify-items:center}
+.deck-grid::-webkit-scrollbar{width:4px}
+.deck-grid::-webkit-scrollbar-thumb{background:rgba(201,168,76,0.2);border-radius:2px}
+.deck-grid .game-card{width:100px;height:142px}
+.deck-card-count{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--bg-dark);border:1.5px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--gold-b);z-index:4}
+
+/* ========== Draw Pile / Discard Pile Buttons ========== */
+.pile-btn{display:flex;align-items:center;gap:4px;padding:4px 8px;background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.15);border-radius:4px;font-size:10px;color:var(--text-dim);cursor:pointer;transition:all .15s}
+.pile-btn:hover{color:var(--gold-l);border-color:var(--gold-d)}
+.pile-btn .count{font-weight:700;color:var(--text)}
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="device-screen">
+
+    <!-- ========== Screen: Main Menu ========== -->
+    <div class="screen active" id="screen-menu">
+      <div class="menu-bg-art"></div>
+      <div class="menu-content">
+        <h1 class="menu-title">尖塔征途</h1>
+        <p class="menu-subtitle">My Spire</p>
+        <div class="menu-buttons">
+          <button class="btn btn-gold" onclick="switchScreen('select')">新的征途</button>
+          <button class="btn btn-dark" onclick="switchScreen('combat')">继续探索</button>
+          <button class="btn btn-dark" onclick="switchScreen('deck')">卡牌图鉴</button>
+          <button class="btn btn-ghost">设置</button>
+        </div>
+      </div>
+      <div class="menu-version">v0.1.0 · Prototype</div>
+    </div>
+
+    <!-- ========== Screen: Character Select ========== -->
+    <div class="screen" id="screen-select">
+      <!-- 立绘背景层：每角色一层，选中交叉淡入 -->
+      <div class="char-bg active" data-bg="ironclad">
+        <div class="bg-wash"></div>
+        <div class="bg-name">铁卫</div>
+        <div class="bg-art">⚔️</div>
+      </div>
+      <div class="char-bg" data-bg="silent">
+        <div class="bg-wash"></div>
+        <div class="bg-name">静默猎手</div>
+        <div class="bg-art">🗡️</div>
+      </div>
+      <div class="char-bg" data-bg="defect">
+        <div class="bg-wash"></div>
+        <div class="bg-name">闪电法师</div>
+        <div class="bg-art">🔮</div>
+      </div>
+      <div class="char-bg" data-bg="watcher">
+        <div class="bg-wash"></div>
+        <div class="bg-name">观心者</div>
+        <div class="bg-art">👁️</div>
+      </div>
+      <div class="select-veil"></div>
+
+      <div class="select-header">
+        <h2>选择你的角色</h2>
+        <p>每位英雄拥有独特的起始牌组与遗物</p>
+      </div>
+
+      <!-- 菱形竖向网格：紧密贴合的交错菱形链 -->
+      <div class="diamond-nav">
+        <div class="d-nav-line"></div>
+        <div class="diamond-wrap selected" style="--dx:-40px" data-char="ironclad" onclick="selectChar(this)">
+          <div class="diamond-face"><span class="diamond-icon">⚔️</span></div>
+        </div>
+        <div class="diamond-wrap" style="--dx:40px" data-char="silent" onclick="selectChar(this)">
+          <div class="diamond-face"><span class="diamond-icon">🗡️</span></div>
+        </div>
+        <div class="diamond-wrap" style="--dx:-40px" data-char="defect" onclick="selectChar(this)">
+          <div class="diamond-face"><span class="diamond-icon">🔮</span></div>
+        </div>
+        <div class="diamond-wrap" style="--dx:40px" data-char="watcher" onclick="selectChar(this)">
+          <div class="diamond-face"><span class="diamond-icon">👁️</span></div>
+        </div>
+        <div class="diamond-wrap locked" style="--dx:-40px" onclick="selectChar(this)">
+          <div class="diamond-face"><span class="diamond-icon">🔒</span></div>
+        </div>
+        <div class="diamond-wrap random" style="--dx:40px" onclick="randomChar(this)">
+          <div class="diamond-face"><span class="diamond-icon">🎲</span></div>
+        </div>
+      </div>
+
+      <!-- 角色详情面板：随选中切换 -->
+      <div class="char-detail">
+        <div class="char-detail-inner" id="charDetailInner"></div>
+      </div>
+
+      <div class="select-footer">
+        <button class="btn btn-gold" onclick="switchScreen('map')">启程</button>
+      </div>
+    </div>
+
+    <!-- ========== Screen: Combat ========== -->
+    <div class="screen" id="screen-combat">
+      <div class="top-bar">
+        <div class="left">
+          <button class="icon-btn" onclick="switchScreen('map')">≡</button>
+          <span class="floor-badge">3F</span>
+        </div>
+        <div class="right">
+          <div class="top-hp"><span class="heart">♥</span><span>62 / 75</span></div>
+          <div class="top-energy"><span class="bolt">⚡</span><span>3 / 3</span></div>
+        </div>
+      </div>
+      <div class="combat-enemy-area">
+        <div class="enemy-card">
+          <div class="enemy-intent-row">
+            <span class="intent intent-attack">⚔ 11</span>
+          </div>
+          <div class="enemy-sprite">🪱</div>
+          <div class="enemy-hp-bar">
+            <div class="hp-bar">
+              <div class="hp-fill" style="width:72%"></div>
+              <div class="hp-text">32 / 44</div>
+            </div>
+          </div>
+          <div class="enemy-name">颚虫</div>
+          <div class="enemy-buffs"></div>
+        </div>
+      </div>
+      <div class="combat-player-status">
+        <div class="player-left">
+          <div class="player-hp-mini"><span class="heart">♥</span><span class="hp-num">62 / 75</span></div>
+          <span class="block-shield">🛡 5</span>
+        </div>
+        <div class="player-right">
+          <button class="pile-btn">抽牌堆 <span class="count">7</span></button>
+          <button class="pile-btn">弃牌堆 <span class="count">3</span></button>
+        </div>
+      </div>
+      <div class="combat-hand-area">
+        <div class="hand-scroll">
+          <div class="game-card type-attack rarity-common" onclick="toggleCard(this)">
+            <div class="card-cost">1</div>
+            <div class="card-name">打击</div>
+            <div class="card-art">⚔️</div>
+            <div class="card-desc">造成 <span class="dmg">6</span> 点伤害。</div>
+            <div class="card-type-label">攻击</div>
+          </div>
+          <div class="game-card type-skill rarity-common" onclick="toggleCard(this)">
+            <div class="card-cost">1</div>
+            <div class="card-name">防御</div>
+            <div class="card-art">🛡️</div>
+            <div class="card-desc">获得 <span class="blk">5</span> 点格挡。</div>
+            <div class="card-type-label">技能</div>
+          </div>
+          <div class="game-card type-attack rarity-common" onclick="toggleCard(this)">
+            <div class="card-cost">2</div>
+            <div class="card-name">重击</div>
+            <div class="card-art">💥</div>
+            <div class="card-desc">造成 <span class="dmg">8</span> 点伤害。施加 <span class="debuff">2</span> 层易伤。</div>
+            <div class="card-type-label">攻击</div>
+          </div>
+          <div class="game-card type-attack rarity-common" onclick="toggleCard(this)">
+            <div class="card-cost">1</div>
+            <div class="card-name">打击</div>
+            <div class="card-art">⚔️</div>
+            <div class="card-desc">造成 <span class="dmg">6</span> 点伤害。</div>
+            <div class="card-type-label">攻击</div>
+          </div>
+          <div class="game-card type-skill rarity-common" onclick="toggleCard(this)">
+            <div class="card-cost">1</div>
+            <div class="card-name">防御</div>
+            <div class="card-art">🛡️</div>
+            <div class="card-desc">获得 <span class="blk">5</span> 点格挡。</div>
+            <div class="card-type-label">技能</div>
+          </div>
+        </div>
+      </div>
+      <div class="combat-bottom-bar">
+        <div></div>
+        <button class="btn btn-gold btn-end-turn" onclick="switchScreen('reward')">结束回合</button>
+        <div class="energy-gem">3</div>
+      </div>
+    </div>
+
+    <!-- ========== Screen: Map ========== -->
+    <div class="screen" id="screen-map">
+      <div class="top-bar">
+        <div class="left">
+          <button class="icon-btn" onclick="switchScreen('menu')">≡</button>
+          <span class="floor-badge">2F</span>
+        </div>
+        <div class="right">
+          <div class="top-hp"><span class="heart">♥</span><span>62 / 75</span></div>
+          <div class="gold-coin">🪙 155</div>
+        </div>
+      </div>
+      <div class="map-header">
+        <h2>第一幕</h2>
+        <p class="act-info">探索尖塔 · 选择你的路径</p>
+      </div>
+      <div class="map-scroll">
+        <div class="map-container">
+          <div class="map-row">
+            <div class="map-node node-boss" title="Boss">👑</div>
+          </div>
+          <div class="map-row">
+            <div class="map-node node-campfire" title="篝火">🔥</div>
+            <div class="map-node node-treasure" title="宝箱">💎</div>
+          </div>
+          <div class="map-row">
+            <div class="map-node node-battle" title="战斗">⚔️</div>
+            <div class="map-node node-event" title="事件">❓</div>
+            <div class="map-node node-campfire" title="篝火">🔥</div>
+          </div>
+          <div class="map-row">
+            <div class="map-node node-shop" title="商店">🏪</div>
+            <div class="map-node node-battle" title="战斗">⚔️</div>
+          </div>
+          <div class="map-row">
+            <div class="map-node node-elite" title="精英">💀</div>
+            <div class="map-node node-event" title="事件">❓</div>
+            <div class="map-node node-battle" title="战斗">⚔️</div>
+          </div>
+          <div class="map-row">
+            <div class="map-node node-battle visited" title="战斗">⚔️</div>
+            <div class="map-node node-battle current" title="战斗">⚔️</div>
+            <div class="map-node node-event visited" title="事件">❓</div>
+          </div>
+        </div>
+      </div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(212,69,62,0.2);border-color:var(--red-d)"></div>战斗</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(156,39,176,0.2);border-color:#9c27b0"></div>精英</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(201,168,76,0.15);border-color:var(--gold-d)"></div>商店</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(255,87,34,0.15);border-color:#e65100"></div>篝火</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(33,150,243,0.15);border-color:#1976d2"></div>事件</div>
+        <div class="legend-item"><div class="legend-dot" style="background:rgba(255,193,7,0.15);border-color:#ffc107"></div>宝箱</div>
+      </div>
+    </div>
+
+    <!-- ========== Screen: Card Reward ========== -->
+    <div class="screen" id="screen-reward">
+      <div class="top-bar">
+        <div class="left"><button class="icon-btn" onclick="switchScreen('map')">‹</button></div>
+        <div class="right"><div class="gold-coin">🪙 155</div></div>
+      </div>
+      <div class="reward-header">
+        <h2>战斗胜利</h2>
+        <p>选择一张卡牌加入牌组，或跳过</p>
+      </div>
+      <div class="reward-cards">
+        <div class="reward-card-wrap" onclick="switchScreen('map')">
+          <span class="rarity-tag common">普通</span>
+          <div class="game-card type-attack rarity-common">
+            <div class="card-cost">1</div>
+            <div class="card-name">旋风斩</div>
+            <div class="card-art">🌀</div>
+            <div class="card-desc">对所有敌人造成 <span class="dmg">8</span> 点伤害。</div>
+            <div class="card-type-label">攻击</div>
+          </div>
+        </div>
+        <div class="reward-card-wrap" onclick="switchScreen('map')">
+          <span class="rarity-tag uncommon">罕见</span>
+          <div class="game-card type-skill rarity-uncommon">
+            <div class="card-cost">0</div>
+            <div class="card-name">战嚎</div>
+            <div class="card-art">📢</div>
+            <div class="card-desc">抽 <span class="buff">2</span> 张牌。消耗。</div>
+            <div class="card-type-label">技能</div>
+          </div>
+        </div>
+        <div class="reward-card-wrap" onclick="switchScreen('map')">
+          <span class="rarity-tag rare">稀有</span>
+          <div class="game-card type-power rarity-rare">
+            <div class="card-cost">3</div>
+            <div class="card-name">不灭意志</div>
+            <div class="card-art">👹</div>
+            <div class="card-desc">每回合开始获得 <span class="buff">2</span> 层力量。</div>
+            <div class="card-type-label">能力</div>
+          </div>
+        </div>
+      </div>
+      <div class="reward-footer">
+        <button class="btn btn-dark" onclick="switchScreen('map')">跳过</button>
+      </div>
+    </div>
+
+    <!-- ========== Screen: Shop ========== -->
+    <div class="screen" id="screen-shop">
+      <div class="top-bar">
+        <div class="left"><button class="icon-btn" onclick="switchScreen('map')">‹</button></div>
+        <div class="right"><div class="gold-coin">🪙 155</div></div>
+      </div>
+      <div class="shop-header">
+        <h2>商店</h2>
+      </div>
+      <div class="shop-scroll">
+        <div class="shop-section">
+          <div class="shop-section-title">卡牌</div>
+          <div class="shop-card-row">
+            <div class="shop-item">
+              <div class="game-card type-attack rarity-uncommon" style="width:90px;height:128px">
+                <div class="card-cost">1</div>
+                <div class="card-name" style="font-size:10px">Disarm</div>
+                <div class="card-art" style="height:44px;font-size:24px">✊</div>
+                <div class="card-desc" style="font-size:8px">敌人失去 <span class="debuff">2</span> 力量。消耗。</div>
+                <div class="card-type-label">技能</div>
+              </div>
+              <div class="price-tag">45 🪙</div>
+            </div>
+            <div class="shop-item">
+              <div class="game-card type-skill rarity-rare" style="width:90px;height:128px">
+                <div class="card-cost">1</div>
+                <div class="card-name" style="font-size:10px">Offering</div>
+                <div class="card-art" style="height:44px;font-size:24px">🔥</div>
+                <div class="card-desc" style="font-size:8px">失去 <span class="dmg">6</span> HP。抽3牌+2能量。</div>
+                <div class="card-type-label">技能</div>
+              </div>
+              <div class="price-tag">68 🪙</div>
+            </div>
+            <div class="shop-item sold">
+              <div class="game-card type-attack rarity-common" style="width:90px;height:128px;opacity:.4">
+                <div class="card-cost">0</div>
+                <div class="card-name" style="font-size:10px">Flex</div>
+                <div class="card-art" style="height:44px;font-size:24px">💪</div>
+                <div class="card-desc" style="font-size:8px">获得 <span class="buff">2</span> 力量。回合结束失去。</div>
+                <div class="card-type-label">技能</div>
+              </div>
+              <div class="price-tag">已售</div>
+            </div>
+          </div>
+        </div>
+        <div class="shop-section">
+          <div class="shop-section-title">遗物</div>
+          <div class="shop-relic-item">
+            <div class="relic-icon">🧲</div>
+            <div class="relic-info">
+              <div class="relic-name">磁化护符</div>
+              <div class="relic-desc">战斗开始时，将 1 张随机攻击牌置于手牌顶部</div>
+            </div>
+            <div class="relic-price">120 🪙</div>
+          </div>
+          <div class="shop-relic-item">
+            <div class="relic-icon">🦴</div>
+            <div class="relic-info">
+              <div class="relic-name">遗骨护身符</div>
+              <div class="relic-desc">获得 50 金币时，额外获得 10 金币</div>
+            </div>
+            <div class="relic-price">85 🪙</div>
+          </div>
+        </div>
+        <div class="shop-section">
+          <div class="shop-section-title">服务</div>
+          <div class="shop-remove">
+            <div class="shop-remove-info">
+              <div class="relic-icon">✂️</div>
+              <div class="relic-info">
+                <div class="relic-name" style="color:var(--red-l)">移除卡牌</div>
+                <div class="relic-desc">从牌组中移除一张卡牌</div>
+              </div>
+            </div>
+            <div class="relic-price" style="background:linear-gradient(180deg,var(--red-l),var(--red-d));border-color:var(--red-l)">75 🪙</div>
+          </div>
+        </div>
+      </div>
+      <div class="shop-footer">
+        <button class="btn btn-dark" onclick="switchScreen('map')">离开</button>
+      </div>
+    </div>
+
+    <!-- ========== Screen: Campfire ========== -->
+    <div class="screen" id="screen-campfire">
+      <div class="top-bar">
+        <div class="left"><button class="icon-btn" onclick="switchScreen('map')">‹</button></div>
+        <div class="right"><div class="top-hp"><span class="heart">♥</span><span>62 / 75</span></div></div>
+      </div>
+      <div class="campfire-header">
+        <h2>篝火</h2>
+      </div>
+      <div class="campfire-visual">🔥</div>
+      <div class="campfire-options">
+        <div class="campfire-option" onclick="switchScreen('map')">
+          <div class="opt-icon rest">💚</div>
+          <div class="opt-info">
+            <h3>休息</h3>
+            <p>恢复 30% 生命值（约 22 点）</p>
+          </div>
+        </div>
+        <div class="campfire-option" onclick="switchScreen('deck')">
+          <div class="opt-icon upgrade">⬆️</div>
+          <div class="opt-info">
+            <h3>锻造升级</h3>
+            <p>选择一张卡牌进行升级</p>
+          </div>
+        </div>
+      </div>
+      <div class="campfire-hp-display">
+        <div class="hp-bar">
+          <div class="hp-fill" style="width:82%"></div>
+          <div class="hp-text">62 / 75</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== Screen: Deck View ========== -->
+    <div class="screen" id="screen-deck">
+      <div class="top-bar">
+        <div class="left"><button class="icon-btn" onclick="switchScreen('map')">‹</button></div>
+        <div class="right"><span class="deck-count">12 张</span></div>
+      </div>
+      <div class="deck-header">
+        <h2>牌组</h2>
+      </div>
+      <div class="deck-sort">
+        <button class="btn btn-ghost active">按类型</button>
+        <button class="btn btn-ghost">按费用</button>
+        <button class="btn btn-ghost">按名称</button>
+      </div>
+      <div class="deck-grid">
+        <div class="game-card type-attack rarity-common" style="position:relative">
+          <div class="deck-card-count">2</div>
+          <div class="card-cost">1</div>
+          <div class="card-name">打击</div>
+          <div class="card-art">⚔️</div>
+          <div class="card-desc">造成 <span class="dmg">6</span> 伤害。</div>
+          <div class="card-type-label">攻击</div>
+        </div>
+        <div class="game-card type-skill rarity-common" style="position:relative">
+          <div class="deck-card-count">2</div>
+          <div class="card-cost">1</div>
+          <div class="card-name">防御</div>
+          <div class="card-art">🛡️</div>
+          <div class="card-desc">获得 <span class="blk">5</span> 格挡。</div>
+          <div class="card-type-label">技能</div>
+        </div>
+        <div class="game-card type-attack rarity-common" style="position:relative">
+          <div class="deck-card-count">1</div>
+          <div class="card-cost">2</div>
+          <div class="card-name">重击</div>
+          <div class="card-art">💥</div>
+          <div class="card-desc">造成 <span class="dmg">8</span> 伤害。施加 <span class="debuff">2</span> 易伤。</div>
+          <div class="card-type-label">攻击</div>
+        </div>
+        <div class="game-card type-attack rarity-uncommon" style="position:relative">
+          <div class="deck-card-count">1</div>
+          <div class="card-cost">1</div>
+          <div class="card-name">旋风斩</div>
+          <div class="card-art">🌀</div>
+          <div class="card-desc">对所有敌人造成 <span class="dmg">8</span> 伤害。</div>
+          <div class="card-type-label">攻击</div>
+        </div>
+        <div class="game-card type-skill rarity-uncommon" style="position:relative">
+          <div class="deck-card-count">1</div>
+          <div class="card-cost">0</div>
+          <div class="card-name">深呼吸</div>
+          <div class="card-art">💨</div>
+          <div class="card-desc">抽 <span class="buff">1</span> 张牌。消耗。</div>
+          <div class="card-type-label">技能</div>
+        </div>
+        <div class="game-card type-attack rarity-rare" style="position:relative">
+          <div class="deck-card-count">1</div>
+          <div class="card-cost">1</div>
+          <div class="card-name">重压</div>
+          <div class="card-art">🏋️</div>
+          <div class="card-desc">造成等于格挡的伤害。</div>
+          <div class="card-type-label">攻击</div>
+        </div>
+        <div class="game-card type-power rarity-rare" style="position:relative">
+          <div class="deck-card-count">1</div>
+          <div class="card-cost">3</div>
+          <div class="card-name">不灭意志</div>
+          <div class="card-art">👹</div>
+          <div class="card-desc">每回合获得 <span class="buff">2</span> 力量。</div>
+          <div class="card-type-label">能力</div>
+        </div>
+        <div class="game-card type-skill rarity-common" style="position:relative">
+          <div class="deck-card-count">1</div>
+          <div class="card-cost">1</div>
+          <div class="card-name">战吼</div>
+          <div class="card-art">📣</div>
+          <div class="card-desc">获得 <span class="buff">6</span> 格挡。抽 <span class="buff">1</span> 牌。</div>
+          <div class="card-type-label">技能</div>
+        </div>
+        <div class="game-card type-attack rarity-common unplayable" style="position:relative">
+          <div class="deck-card-count">1</div>
+          <div class="card-cost">?</div>
+          <div class="card-name">伤口</div>
+          <div class="card-art">🩹</div>
+          <div class="card-desc">不可打出。</div>
+          <div class="card-type-label">状态</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Prototype Navigation -->
+<div class="proto-nav">
+  <button class="active" onclick="switchScreen('menu')">主菜单</button>
+  <button onclick="switchScreen('select')">角色选择</button>
+  <button onclick="switchScreen('combat')">战斗</button>
+  <button onclick="switchScreen('map')">地图</button>
+  <button onclick="switchScreen('reward')">卡牌奖励</button>
+  <button onclick="switchScreen('shop')">商店</button>
+  <button onclick="switchScreen('campfire')">篝火</button>
+  <button onclick="switchScreen('deck')">牌组</button>
+</div>
+
+<script>
+function switchScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  document.querySelectorAll('.proto-nav button').forEach(b => b.classList.remove('active'));
+  event && event.target && event.target.closest('button') && event.target.closest('button').classList.add('active');
+  const navBtn = document.querySelector('.proto-nav button[onclick*="' + id + '"]');
+  if (navBtn) navBtn.classList.add('active');
+}
+
+/* ===== 角色数据 ===== */
+const CHARS = {
+  ironclad: {
+    name: '铁卫', title: 'Ironclad · 血怒战士', hp: '80/80', energy: 3, deck: 10, mech: '怒气',
+    relic: '燃烧之血', relicDesc: '每场战斗结束恢复 6 点生命'
+  },
+  silent: {
+    name: '静默猎手', title: 'Silent · 暗影刺客', hp: '70/70', energy: 3, deck: 10, mech: '毒/弃牌',
+    relic: '双蛇之环', relicDesc: '战斗开始时额外抽 2 张牌'
+  },
+  defect: {
+    name: '闪电法师', title: 'Defect · 充能构造体', hp: '75/75', energy: 3, deck: 10, mech: '充能球',
+    relic: '纯水结晶', relicDesc: '战斗开始时获得 1 个充能球槽位'
+  },
+  watcher: {
+    name: '观心者', title: 'Watcher · 神明使者', hp: '72/72', energy: 3, deck: 10, mech: '姿态',
+    relic: '纯洁法印', relicDesc: '每进入一次愤怒姿态，获得 2 点能量'
+  }
+};
+
+/* ===== 菱形选择 + 立绘背景切换 ===== */
+function selectChar(el) {
+  // 锁定角色：抖动提示，不切换
+  if (el.classList.contains('locked')) {
+    el.classList.remove('shake');
+    void el.offsetWidth; // 重置动画
+    el.classList.add('shake');
+    return;
+  }
+  const id = el.dataset.char;
+  // 菱形选中态
+  document.querySelectorAll('.diamond-wrap').forEach(d => d.classList.remove('selected'));
+  el.classList.add('selected');
+  // 立绘背景交叉淡入
+  document.querySelectorAll('.char-bg').forEach(b => b.classList.toggle('active', b.dataset.bg === id));
+  renderCharDetail(id);
+}
+
+/* ===== 随机角色：轮盘滚动后定格 ===== */
+let _rouletteRunning = false;
+function randomChar(el) {
+  if (_rouletteRunning) return;
+  const pool = Array.from(document.querySelectorAll('.diamond-wrap[data-char]'));
+  const final = pool[Math.floor(Math.random() * pool.length)];
+  const steps = 12 + Math.floor(Math.random() * 4);
+  _rouletteRunning = true;
+  el.classList.add('rolling');
+  let i = 0;
+  const iv = setInterval(() => {
+    const cur = pool[i % pool.length];
+    document.querySelectorAll('.diamond-wrap').forEach(d => d.classList.remove('selected'));
+    cur.classList.add('selected');
+    document.querySelectorAll('.char-bg').forEach(b => b.classList.toggle('active', b.dataset.bg === cur.dataset.char));
+    renderCharDetail(cur.dataset.char);
+    i++;
+    if (i > steps) {
+      clearInterval(iv);
+      el.classList.remove('rolling');
+      selectChar(final); // 定格并走正常选中流程
+      _rouletteRunning = false;
+    }
+  }, 130);
+}
+
+function renderCharDetail(id) {
+  const c = CHARS[id];
+  if (!c) return;
+  const el = document.getElementById('charDetailInner');
+  el.innerHTML =
+    '<div class="cd-top"><span class="cd-name">' + c.name + '</span><span class="cd-title">' + c.title + '</span></div>' +
+    '<div class="cd-stats">' +
+      '<div class="cd-stat"><div class="v">' + c.hp + '</div><div class="l">生命值</div></div>' +
+      '<div class="cd-stat"><div class="v">' + c.energy + '</div><div class="l">能量</div></div>' +
+      '<div class="cd-stat"><div class="v">' + c.deck + '</div><div class="l">起始牌组</div></div>' +
+      '<div class="cd-stat"><div class="v">' + c.mech + '</div><div class="l">独特机制</div></div>' +
+    '</div>' +
+    '<div class="cd-relic"><span class="relic-name">' + c.relic + '</span><span>' + c.relicDesc + '</span></div>';
+  // 重新触发入场动画
+  el.style.animation = 'none';
+  void el.offsetWidth;
+  el.style.animation = '';
+}
+renderCharDetail('ironclad');
+
+function toggleCard(el) {
+  el.style.transform = el.style.transform === 'translateY(-10px) scale(1.06)' ? '' : 'translateY(-10px) scale(1.06)';
+}
+</script>
+
+</body>
+</html>

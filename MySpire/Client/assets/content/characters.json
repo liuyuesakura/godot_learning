@@ -1,0 +1,53 @@
+{
+  "characters": [
+    {
+      "id": "ironclad",
+      "name": "铁卫",
+      "title": "血染的战刃",
+      "emoji": "⚔",
+      "hp": 80,
+      "color": "red",
+      "mechanic": "力量成长",
+      "relic": "燃烧之血",
+      "relic_desc": "每场战斗结束恢复 6 点生命（占位，未实装）",
+      "deck": ["strike", "strike", "strike", "strike", "strike", "defend", "defend", "defend", "defend", "bash"]
+    },
+    {
+      "id": "silent",
+      "name": "静默猎手",
+      "title": "无声的暗影",
+      "emoji": "✦",
+      "hp": 70,
+      "color": "green",
+      "mechanic": "虚弱与过牌",
+      "relic": "双蛇之环",
+      "relic_desc": "战斗开始时额外抽 2 张牌（占位，未实装）",
+      "deck": ["strike", "strike", "strike", "strike", "strike", "defend", "defend", "defend", "defend", "neutralize", "survivor"]
+    },
+    {
+      "id": "defect",
+      "name": "闪电法师",
+      "title": "觉醒的机偶",
+      "emoji": "◈",
+      "hp": 75,
+      "color": "blue",
+      "mechanic": "攻守互换（充能球待实装）",
+      "relic": "纯水结晶",
+      "relic_desc": "战斗开始时获得 1 个充能球槽位（占位，未实装）",
+      "deck": ["strike", "strike", "strike", "strike", "strike", "defend", "defend", "defend", "defend", "spark", "cool_head"]
+    },
+    {
+      "id": "watcher",
+      "name": "观心者",
+      "title": "失明的先知",
+      "emoji": "◉",
+      "hp": 72,
+      "color": "purple",
+      "locked": true,
+      "mechanic": "姿态系统",
+      "relic": "纯粹之泪",
+      "relic_desc": "（未解锁）",
+      "deck": []
+    }
+  ]
+}

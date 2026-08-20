@@ -1,0 +1,30 @@
+# Godot 编辑器缓存
+/.godot/
+.godot/
+
+# 构建产物
+/build/dist/
+/build/ios/MySpire.xcodeproj/
+/build/ios/DerivedData/
+/build/ios/build/
+/build/keystore/
+
+# 签名文件 (绝对不能提交！)
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+*.cer
+
+# 构建输出
+*.apk
+*.aab
+*.ipa
+*.xcarchive
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

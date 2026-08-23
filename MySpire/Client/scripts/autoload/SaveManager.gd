@@ -7,13 +7,17 @@ extends Node
 
 const SAVE_PATH: String = "user://myspire_run.json"
 const IAP_PATH: String = "user://myspire_iap.json"
+const AUTH_PATH: String = "user://myspire_auth.json"
 
 ## IAP 内存缓存：{"non_consumables": {sku -> purchase_dict}, "consumable_inventory": {sku -> int}}
 var _iap_data: Dictionary = {}
+## 登录会话缓存：AuthManager.current_user 的快照（跨启动恢复）。
+var _auth_data: Dictionary = {}
 
 
 func _ready() -> void:
 	_load_iap()
+	_load_auth()
 
 
 # ─── Run 存档 ───────────────────────────────────────────────────
@@ -139,3 +143,46 @@ func get_consumable_count(sku: String) -> int:
 func clear_iaps() -> void:
 	_iap_data = {"non_consumables": {}, "consumable_inventory": {}}
 	_save_iap_to_disk()
+
+
+# ─── 登录会话存档（跨启动恢复） ──────────────────────────────────
+
+
+func _load_auth() -> void:
+	if not FileAccess.file_exists(AUTH_PATH):
+		_auth_data = {}
+		return
+	var f: FileAccess = FileAccess.open(AUTH_PATH, FileAccess.READ)
+	if f == null:
+		_auth_data = {}
+		return
+	var parsed: Variant = JSON.parse_string(f.get_as_text())
+	if parsed is Dictionary:
+		_auth_data = parsed
+	else:
+		_auth_data = {}
+
+
+func _save_auth_to_disk() -> void:
+	var f: FileAccess = FileAccess.open(AUTH_PATH, FileAccess.WRITE)
+	if f == null:
+		push_error("SaveManager: cannot write auth save (err %d)" % FileAccess.get_open_error())
+		return
+	f.store_string(JSON.stringify(_auth_data))
+
+
+## 保存登录会话（AuthManager 登录成功后调用）。
+func save_auth_session(user: Dictionary) -> void:
+	_auth_data = user
+	_save_auth_to_disk()
+
+
+## 加载登录会话。返回空 Dictionary 表示无会话。
+func load_auth_session() -> Dictionary:
+	return _auth_data.duplicate()
+
+
+## 清除登录会话（登出）。
+func clear_auth_session() -> void:
+	_auth_data = {}
+	_save_auth_to_disk()

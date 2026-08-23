@@ -11,6 +11,8 @@
 - Host 权威联机模式（ADR-006）：复用 GDScript 逻辑层，is_multiplayer_authority() 切换单人/多人
 - 数据驱动内容（ADR-002）：JSON 定义卡牌/敌人/遗物，双端共享
 - 种子化确定性生成（ADR-003）：服务端可重放验证
+- 三轨支付（ADR-011）：Android Billing + iOS StoreKit + 桌面模拟器
+- 三轨登录（ADR-012 待写）：Google Sign-In + Sign in with Apple + 桌面模拟器，与支付同构（AuthManager 2026-08-22 Phase 1 落地）
 
 ## 文档体系
 1. 杀戮尖塔_核心循环分析.md — 骨架层（4 不可拆卸内核 + 经济系统）
@@ -23,6 +25,14 @@
 - 用户尚未提供自己的游戏概念
 - 已要求用户提供：概念一句话、品类平台、目标用户、单局时长
 - 用户从 WorkBuddy 临时工作区迁移到正式 Godot 项目目录
+
+## 构建环境（2026-08-21 已验证出包）
+- Godot 4.7.1 mono：`D:\Program Files\Godot_v4.7.1-stable_mono_win64\`
+- JDK 21（必须 17~21，JBR 25 不兼容 Gradle 8.11）：`C:\Users\amerhau\.jdks\jdk-21.0.12+8`（JAVA_HOME）
+- Android SDK：`C:\Users\amerhau\AppData\Local\Android\Sdk`（API 37）
+- Gradle 走腾讯镜像，Maven 走阿里云（~/.gradle/init.gradle）
+- `.build_version` 必须放 `Client/android/`（build/ 的上级），内容 `4.7.1.stable.mono`
+- 出包命令见 2026-08-21.md；首次构建 ~10 分钟
 
 ## 迁移记录
 - 2026-08-15: 从 C:\Users\amerhau\WorkBuddy\2026-08-05-23-01-56\ 迁移至 D:\GodotProjects\MySpire\

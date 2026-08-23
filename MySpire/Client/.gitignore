@@ -9,6 +9,17 @@
 /build/ios/build/
 /build/keystore/
 
+# Android 构建目录（整体忽略，约 1GB，含 Gradle 产物与构建模板）
+# 注意：android/plugins/ 下的文件在忽略规则生效前已被 git 跟踪，
+# 已跟踪文件不受 .gitignore 影响，仍会正常提交/更新。
+# 其他人克隆后首次 Android 导出时 Godot 会自动重建 android/build/。
+# 白名单例外：build.gradle（若将来手动添加原生依赖，需保留在版本控制中）
+# gitignore 规则：父目录被排除则无法重新包含文件，因此逐级放行
+/android/*
+!/android/build/
+/android/build/*
+!/android/build/build.gradle
+
 # 签名文件 (绝对不能提交！)
 *.keystore
 *.jks

@@ -8,12 +8,14 @@ signal screen_changed(screen_id: StringName)
 signal run_ended
 
 const MainMenuScript: GDScript = preload("res://scripts/ui/screens/MainMenu.gd")
+const LoginScreenScript: GDScript = preload("res://scripts/ui/screens/LoginScreen.gd")
 const CharacterSelectScript: GDScript = preload("res://scripts/ui/screens/CharacterSelect.gd")
 const MapScreenScript: GDScript = preload("res://scripts/ui/screens/MapScreen.gd")
 const CombatSceneScript: GDScript = preload("res://scripts/ui/screens/CombatScene.gd")
 const ShopScreenScript: GDScript = preload("res://scripts/ui/screens/ShopScreen.gd")
 
 const SCREENS: Dictionary = {
+	&"login": LoginScreenScript,
 	&"main_menu": MainMenuScript,
 	&"character_select": CharacterSelectScript,
 	&"map": MapScreenScript,

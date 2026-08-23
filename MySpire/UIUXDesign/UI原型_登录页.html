@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MySpire · 登录页原型</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ========== Design Tokens（与 UI原型_竖屏.html 完全同步） ========== */
+:root {
+  --bg-deep: #080814;
+  --bg-dark: #0d1b3e;
+  --bg-mid: #142a5c;
+  --bg-panel: rgba(13, 27, 62, 0.88);
+  --bg-panel-2: rgba(22, 38, 79, 0.75);
+  --gold: #c9a84c;
+  --gold-l: #e6c659;
+  --gold-b: #f0d77b;
+  --gold-d: #9a7e3a;
+  --blue: #4a90d9;
+  --blue-l: #6ab0f5;
+  --blue-d: #2c6fb5;
+  --purple: #9d6ec9;
+  --purple-d: #6b4c9a;
+  --red: #d4453e;
+  --red-l: #e74c3c;
+  --green: #4caf50;
+  --teal: #26a69a;
+  --text: #e8e8e8;
+  --text-gold: #f0d77b;
+  --text-dim: #8a8a9a;
+  --text-muted: #5a5a6a;
+  --font-h: 'Cinzel', 'Noto Serif SC', serif;
+  --font-b: 'Noto Sans SC', system-ui, sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow-glow-gold: 0 0 12px rgba(201,168,76,0.25);
+}
+
+/* ========== Reset ========== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-b);background:#1a1a2e;color:var(--text);display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px 0 60px}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 0%,#1a2f5c 0%,#0a0a1a 70%);z-index:-1}
+
+/* ========== Device Frame（与竖屏原型一致） ========== */
+.device{width:390px;height:844px;border-radius:44px;background:#000;padding:10px;box-shadow:0 20px 60px rgba(0,0,0,0.6),0 0 0 2px #2a2a3e;position:relative;overflow:hidden}
+.device-screen{width:100%;height:100%;border-radius:36px;overflow:hidden;position:relative;background:var(--bg-deep)}
+
+/* ========== 登录画面背景氛围 ========== */
+#screen-login{display:flex;flex-direction:column;position:absolute;inset:0;overflow:hidden}
+.login-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 28%,#1a2f5c 0%,#0d1b3e 45%,#080814 80%)}
+/* 星光粒子 */
+.star{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--gold-b);opacity:0;animation:twinkle 3.6s ease-in-out infinite}
+.star.s2{width:2px;height:2px;background:#cdd7ff;animation-duration:4.8s;animation-delay:1.2s}
+.star.s3{width:4px;height:4px;box-shadow:0 0 8px rgba(240,215,123,0.6);animation-duration:5.4s;animation-delay:0.6s}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(0.6)}50%{opacity:0.9;transform:scale(1)}}
+/* 底部金色雾光 */
+.login-mist{position:absolute;left:0;right:0;bottom:0;height:180px;background:radial-gradient(ellipse at 50% 120%,rgba(201,168,76,0.22) 0%,transparent 65%);pointer-events:none}
+
+/* ========== Logo 区 ========== */
+.login-hero{position:relative;z-index:2;text-align:center;padding-top:92px;flex-shrink:0}
+.logo-diamonds{display:flex;justify-content:center;gap:14px;margin-bottom:22px}
+.ld{width:10px;height:10px;background:transparent;border:1.5px solid var(--gold);transform:rotate(45deg);animation:diamondPulse 2.8s ease-in-out infinite}
+.ld:nth-child(2){animation-delay:.35s}
+.ld:nth-child(3){animation-delay:.7s}
+@keyframes diamondPulse{0%,100%{box-shadow:0 0 0 rgba(240,215,123,0);opacity:.55}50%{box-shadow:0 0 12px rgba(240,215,123,0.75);opacity:1}}
+.login-title{font-family:var(--font-h);font-size:44px;font-weight:700;color:var(--gold-b);text-shadow:0 0 24px rgba(201,168,76,0.45),0 2px 4px rgba(0,0,0,0.8);letter-spacing:4px;line-height:1}
+.login-subtitle{font-family:var(--font-h);font-size:12px;color:var(--text-dim);letter-spacing:7px;text-transform:uppercase;margin-top:10px}
+.login-divider{display:flex;align-items:center;justify-content:center;gap:10px;margin:26px auto 0;width:220px}
+.login-divider .line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold))}
+.login-divider .line.r{background:linear-gradient(90deg,var(--gold),transparent)}
+.login-divider .dia{width:8px;height:8px;border:1.5px solid var(--gold-l);transform:rotate(45deg);box-shadow:0 0 8px rgba(230,198,89,0.5)}
+
+/* ========== 登录面板（毛玻璃） ========== */
+.login-panel{position:relative;z-index:2;margin:34px 26px 0;background:var(--bg-panel);border:1px solid rgba(201,168,76,0.25);border-radius:var(--radius);backdrop-filter:blur(10px);padding:22px 20px 20px;box-shadow:var(--shadow-glow-gold),inset 0 1px 0 rgba(255,255,255,0.04);transition:transform .5s cubic-bezier(.4,0,.2,1),opacity .5s}
+.login-panel.flying{transform:translateY(-460px) scale(0.92);opacity:0}
+
+.input-row{display:flex;align-items:stretch;background:rgba(0,0,0,0.35);border:1px solid rgba(138,138,154,0.28);border-radius:var(--radius-sm);overflow:hidden;transition:border-color .2s,box-shadow .2s;height:48px}
+.input-row + .input-row{margin-top:12px}
+.input-row:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,0.12)}
+.input-prefix{display:flex;align-items:center;gap:5px;padding:0 12px;font-size:14px;font-weight:600;color:var(--text-gold);border-right:1px solid rgba(138,138,154,0.2);flex-shrink:0;cursor:pointer}
+.input-prefix .caret{font-size:9px;color:var(--text-dim)}
+.input-field{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-size:15px;padding:0 12px;font-family:var(--font-b);min-width:0}
+.input-field::placeholder{color:var(--text-muted);font-size:13px}
+.code-btn{flex-shrink:0;background:transparent;border:none;border-left:1px solid rgba(138,138,154,0.2);color:var(--blue-l);font-size:12px;font-weight:600;padding:0 14px;cursor:pointer;font-family:var(--font-b);transition:color .2s;white-space:nowrap}
+.code-btn:hover{color:#9ccaff}
+.code-btn:disabled{color:var(--text-muted);cursor:not-allowed}
+
+.btn-login{width:100%;margin-top:16px;height:48px;background:linear-gradient(180deg,var(--gold-l) 0%,var(--gold) 50%,var(--gold-d) 100%);color:#1a1a2e;border:1px solid var(--gold-b);border-radius:var(--radius-sm);box-shadow:0 2px 10px rgba(201,168,76,0.35),inset 0 1px 0 rgba(255,255,255,0.4);font-size:15px;font-weight:700;letter-spacing:8px;cursor:pointer;font-family:var(--font-b);transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-login:hover{filter:brightness(1.12);transform:translateY(-1px)}
+.btn-login:active{transform:translateY(0)}
+.btn-login:disabled{filter:grayscale(.4) brightness(.75);cursor:wait;transform:none}
+.btn-login.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.spinner{width:16px;height:16px;border:2px solid rgba(26,26,46,0.35);border-top-color:#1a1a2e;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ========== 第三方登录 ========== */
+.login-alt{margin-top:22px;text-align:center}
+.alt-divider{display:flex;align-items:center;gap:12px;color:var(--text-muted);font-size:10px;letter-spacing:2px;margin-bottom:16px}
+.alt-divider::before,.alt-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(138,138,154,0.35))}
+.alt-divider::after{background:linear-gradient(90deg,rgba(138,138,154,0.35),transparent)}
+.alt-buttons{display:flex;justify-content:center;gap:22px}
+.alt-btn{width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s,box-shadow .15s;position:relative}
+.alt-btn:hover{transform:translateY(-2px)}
+.alt-btn:active{transform:translateY(0)}
+.alt-btn .mini-spin{position:absolute;width:20px;height:20px;border:2px solid rgba(255,255,255,0.3);border-top-color:currentColor;border-radius:50%;animation:spin .7s linear infinite}
+.alt-apple{background:#000;border:1px solid rgba(255,255,255,0.85);color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.5)}
+.alt-apple svg{width:22px;height:22px;fill:currentColor}
+.alt-google{background:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.4)}
+.alt-google svg{width:22px;height:22px}
+.alt-btn.done-ok{box-shadow:0 0 14px rgba(76,175,80,0.6)}
+
+/* ========== 协议区 ========== */
+.login-terms{position:relative;z-index:2;margin-top:auto;padding:0 26px 18px;text-align:center}
+.terms-check{display:flex;align-items:flex-start;justify-content:center;gap:7px;font-size:10px;line-height:1.6;color:var(--text-dim);cursor:pointer;user-select:none}
+.checkbox{width:14px;height:14px;flex-shrink:0;margin-top:1px;border:1.5px solid var(--text-dim);border-radius:3px;background:transparent;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:10px;color:transparent}
+.terms-check.on .checkbox{border-color:var(--gold);background:rgba(201,168,76,0.15);color:var(--gold-b)}
+.terms-check a{color:var(--gold);text-decoration:none}
+.terms-check a:hover{text-decoration:underline}
+.terms-version{margin-top:12px;font-size:9px;color:var(--text-muted);letter-spacing:1px}
+
+/* ========== Toast ========== */
+.toast{position:absolute;top:110px;left:50%;transform:translateX(-50%) translateY(-16px);background:rgba(20,20,40,0.95);border:1px solid var(--gold);border-radius:8px;padding:10px 18px;font-size:12px;color:var(--text-gold);opacity:0;pointer-events:none;transition:all .35s;z-index:10;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.5)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:var(--green);color:#9fe0a3}
+
+/* ========== 登录成功后的用户卡 ========== */
+.user-card{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,8,20,0.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .5s .1s}
+.user-card.show{opacity:1;pointer-events:auto}
+.uc-inner{background:var(--bg-panel);border:1px solid rgba(201,168,76,0.35);border-radius:var(--radius-lg);padding:30px 34px;text-align:center;backdrop-filter:blur(10px);box-shadow:var(--shadow-glow-gold);transform:translateY(24px) scale(.94);transition:transform .5s .15s cubic-bezier(.34,1.4,.64,1)}
+.user-card.show .uc-inner{transform:translateY(0) scale(1)}
+.uc-avatar{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--blue-l),var(--blue),var(--blue-d));border:2px solid var(--gold-l);box-shadow:0 0 16px rgba(74,144,217,0.5);display:flex;align-items:center;justify-content:center;font-size:26px}
+.uc-name{font-family:var(--font-h);font-size:18px;font-weight:600;color:var(--text-gold);letter-spacing:1px}
+.uc-meta{font-size:10px;color:var(--text-dim);margin-top:6px}
+.uc-provider{margin-top:10px;display:inline-block;font-size:9px;padding:3px 10px;border:1px solid rgba(138,138,154,0.35);border-radius:10px;color:var(--text-dim);letter-spacing:1px}
+.uc-enter{margin-top:20px;padding:10px 34px;background:linear-gradient(180deg,var(--gold-l),var(--gold),var(--gold-d));color:#1a1a2e;border:1px solid var(--gold-b);border-radius:var(--radius-sm);font-size:13px;font-weight:700;letter-spacing:4px;cursor:pointer;font-family:var(--font-b);box-shadow:0 2px 8px rgba(201,168,76,0.3)}
+.uc-enter:hover{filter:brightness(1.12)}
+
+/* ========== 原型说明区（设备外） ========== */
+.proto-notes{max-width:390px;margin-top:26px;background:rgba(255,255,255,0.03);border:1px solid rgba(201,168,76,0.12);border-radius:10px;padding:16px 18px;font-size:11px;line-height:1.8;color:var(--text-dim)}
+.proto-notes h3{font-family:var(--font-h);font-size:12px;color:var(--text-gold);letter-spacing:2px;margin-bottom:8px}
+.proto-notes code{background:rgba(201,168,76,0.12);color:var(--gold-b);padding:1px 5px;border-radius:3px;font-family:monospace;font-size:10px}
+</style>
+</head>
+<body>
+
+<div class="device">
+  <div class="device-screen">
+    <!-- ==================== 登录画面 ==================== -->
+    <div id="screen-login">
+      <div class="login-bg"></div>
+      <div class="login-mist"></div>
+      <!-- 星光粒子（位置随机散布） -->
+      <div class="star" style="top:8%;left:14%"></div>
+      <div class="star s2" style="top:14%;left:78%"></div>
+      <div class="star s3" style="top:6%;left:52%"></div>
+      <div class="star" style="top:20%;left:30%"></div>
+      <div class="star s2" style="top:12%;left:62%"></div>
+      <div class="star s3" style="top:24%;left:88%"></div>
+      <div class="star s2" style="top:4%;left:88%"></div>
+      <div class="star" style="top:17%;left:6%"></div>
+
+      <!-- Logo 区 -->
+      <div class="login-hero">
+        <div class="logo-diamonds"><div class="ld"></div><div class="ld"></div><div class="ld"></div></div>
+        <div class="login-title">MySpire</div>
+        <div class="login-subtitle">The Mystic Spire</div>
+        <div class="login-divider"><div class="line"></div><div class="dia"></div><div class="line r"></div></div>
+      </div>
+
+      <!-- 登录面板 -->
+      <div class="login-panel" id="loginPanel">
+        <div class="input-row">
+          <div class="input-prefix">+86<span class="caret">▼</span></div>
+          <input class="input-field" id="phoneInput" type="tel" maxlength="11" placeholder="请输入手机号" inputmode="numeric">
+        </div>
+        <div class="input-row">
+          <input class="input-field" id="codeInput" type="text" maxlength="6" placeholder="验证码" inputmode="numeric">
+          <button class="code-btn" id="codeBtn" onclick="sendCode()">获取验证码</button>
+        </div>
+        <button class="btn-login" id="loginBtn" onclick="phoneLogin()">登 录</button>
+
+        <div class="login-alt">
+          <div class="alt-divider">其他登录方式</div>
+          <div class="alt-buttons">
+            <button class="alt-btn alt-apple" id="appleBtn" onclick="thirdLogin('apple')" title="Sign in with Apple">
+              <svg viewBox="0 0 24 24"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.53 4.08zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
+            </button>
+            <button class="alt-btn alt-google" id="googleBtn" onclick="thirdLogin('google')" title="Sign in with Google">
+              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96H1.29v3.09C3.26 21.3 7.31 24 12 24z"/><path fill="#FBBC05" d="M5.27 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.98-3.09z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.98 3.09C6.22 6.86 8.87 4.75 12 4.75z"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 协议区 -->
+      <div class="login-terms">
+        <div class="terms-check" id="termsCheck" onclick="toggleTerms()">
+          <div class="checkbox">✓</div>
+          <div>我已阅读并同意<a href="#" onclick="event.preventDefault();event.stopPropagation()">《用户协议》</a>与<a href="#" onclick="event.preventDefault();event.stopPropagation()">《隐私政策》</a>，手机号登录将自动注册账号</div>
+        </div>
+        <div class="terms-version">MySpire v1.0.0 · Debug Build</div>
+      </div>
+
+      <!-- Toast -->
+      <div class="toast" id="toast"></div>
+
+      <!-- 登录成功用户卡 -->
+      <div class="user-card" id="userCard">
+        <div class="uc-inner">
+          <div class="uc-avatar">🗼</div>
+          <div class="uc-name" id="ucName">Tester</div>
+          <div class="uc-meta" id="ucMeta">已登录 · 会话已保存</div>
+          <div class="uc-provider" id="ucProvider">MOBILE</div>
+          <button class="uc-enter" onclick="enterGame()">进入游戏</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 设计说明 -->
+<div class="proto-notes">
+  <h3>◆ 原型说明 · 登录画面（竖屏）</h3>
+  与 <code>UI原型_竖屏.html</code> 共用同一套 Design Tokens（深蓝金调 / Cinzel + Noto Sans SC）。<br>
+  · <b>氛围</b>：深蓝径向渐变 + 星光闪烁 + 底部金色雾光，菱形装饰呼应角色选择页菱形链<br>
+  · <b>交互</b>：获取验证码 60s 倒计时；未勾选协议点登录触发抖动；三种登录均模拟 90% 成功 + loading<br>
+  · <b>Godot 接线</b>（AuthManager 已就绪）：Apple 按钮 → <code>AuthManager.login_with_apple()</code>；Google 按钮 → <code>AuthManager.login_with_google()</code>；手机登录走 <code>NetworkClient</code> 短信通道（Phase 2 服务端实装）<br>
+  · <b>信号</b>：loading 态 ↔ <code>login_started</code>；用户卡 ↔ <code>login_succeeded(user)</code>；抖动/错误 Toast ↔ <code>login_failed(error)</code>
+</div>
+
+<script>
+/* ========== 协议勾选 ========== */
+let termsAgreed = false;
+function toggleTerms() {
+  termsAgreed = !termsAgreed;
+  document.getElementById('termsCheck').classList.toggle('on', termsAgreed);
+}
+
+/* ========== Toast ========== */
+let toastTimer = null;
+function showToast(msg, ok) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (ok ? ' ok' : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+/* ========== 验证码倒计时 ========== */
+let cdLeft = 0;
+function sendCode() {
+  const phone = document.getElementById('phoneInput').value.trim();
+  if (!/^1\d{10}$/.test(phone)) { showToast('请输入 11 位手机号'); return; }
+  const btn = document.getElementById('codeBtn');
+  cdLeft = 60;
+  btn.disabled = true;
+  btn.textContent = cdLeft + 's 后重发';
+  showToast('验证码已发送（原型模拟）', true);
+  const tick = setInterval(() => {
+    cdLeft--;
+    if (cdLeft <= 0) { clearInterval(tick); btn.disabled = false; btn.textContent = '获取验证码'; }
+    else btn.textContent = cdLeft + 's 后重发';
+  }, 1000);
+}
+
+/* ========== 手机号登录 ========== */
+let busy = false;
+function phoneLogin() {
+  if (busy) return;
+  const btn = document.getElementById('loginBtn');
+  const phone = document.getElementById('phoneInput').value.trim();
+  const code = document.getElementById('codeInput').value.trim();
+  if (!termsAgreed) { btn.classList.add('shake'); setTimeout(()=>btn.classList.remove('shake'), 380); showToast('请先阅读并勾选用户协议'); return; }
+  if (!/^1\d{10}$/.test(phone)) { showToast('请输入 11 位手机号'); return; }
+  if (!/^\d{4,6}$/.test(code)) { showToast('请输入验证码'); return; }
+  busy = true;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>登录中…';
+  /* 对应 AuthManager：login_started → login_succeeded / login_failed */
+  setTimeout(() => {
+    busy = false;
+    btn.disabled = false;
+    btn.textContent = '登 录';
+    if (Math.random() < 0.9) {
+      showSuccess('138****' + phone.slice(-4), '138****' + phone.slice(-4) + ' · 会话已保存', 'MOBILE');
+    } else {
+      showToast('登录失败：验证码错误（模拟 10% 失败）');
+    }
+  }, 1400);
+}
+
+/* ========== 第三方登录 ========== */
+function thirdLogin(provider) {
+  if (busy) return;
+  if (!termsAgreed) {
+    document.getElementById('loginBtn').classList.add('shake');
+    setTimeout(()=>document.getElementById('loginBtn').classList.remove('shake'), 380);
+    showToast('请先阅读并勾选用户协议');
+    return;
+  }
+  const btn = document.getElementById(provider + 'Btn');
+  busy = true;
+  const spin = document.createElement('span');
+  spin.className = 'mini-spin';
+  btn.appendChild(spin);
+  /* 对应 AuthManager.login_with_apple() / login_with_google() */
+  setTimeout(() => {
+    busy = false;
+    spin.remove();
+    btn.classList.add('done-ok');
+    setTimeout(()=>btn.classList.remove('done-ok'), 1200);
+    if (Math.random() < 0.9) {
+      if (provider === 'apple') showSuccess('Tester (Apple)', 'privaterelay@icloud.com', 'APPLE ID');
+      else showSuccess('Tester (Google)', 'tester.google@sim.local', 'GOOGLE');
+    } else {
+      showToast('授权已取消（模拟 10% 失败）');
+    }
+  }, 1200);
+}
+
+/* ========== 登录成功 → 用户卡 ========== */
+function showSuccess(name, meta, provider) {
+  document.getElementById('ucName').textContent = name;
+  document.getElementById('ucMeta').textContent = meta;
+  document.getElementById('ucProvider').textContent = provider;
+  document.getElementById('loginPanel').classList.add('flying');
+  document.getElementById('userCard').classList.add('show');
+  showToast('登录成功', true);
+}
+function enterGame() {
+  /* 原型：重置回登录页。实际实现：GameManager.change_screen(&"main_menu") */
+  document.getElementById('userCard').classList.remove('show');
+  document.getElementById('loginPanel').classList.remove('flying');
+  showToast('（原型演示）即将进入主菜单 → GameManager.change_screen("main_menu")', true);
+}
+</script>
+
+</body>
+</html>

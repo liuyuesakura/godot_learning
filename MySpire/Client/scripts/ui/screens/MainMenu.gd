@@ -39,6 +39,28 @@ func _ready() -> void:
 	quit_btn.pressed.connect(func() -> void: get_tree().quit())
 	center.add_child(quit_btn)
 
+	# 登录态显示：已登录显示用户 + 登出入口。
+	if AuthManager.is_authenticated and AuthManager.current_user != null:
+		var user_chip := UITheme.label(
+			"%s · %s" % [
+				String(AuthManager.current_user.get("display_name", "Player")),
+				String(AuthManager.current_user.get("provider", "")).to_upper(),
+			],
+			12, UITheme.GOLD
+		)
+		user_chip.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
+		user_chip.offset_top = 14.0
+		add_child(user_chip)
+
+		var logout_btn := UITheme.ghost_button("登出", Vector2(120, 36))
+		logout_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+		logout_btn.offset_left = -140.0
+		logout_btn.offset_top = 12.0
+		logout_btn.offset_right = -20.0
+		logout_btn.offset_bottom = 48.0
+		logout_btn.pressed.connect(_on_logout)
+		add_child(logout_btn)
+
 	var version := UITheme.label("客户端原型 v0.1 · 离线垂直切片", 11, Color(0.54, 0.58, 0.66, 0.6))
 	version.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	version.offset_top = -36.0
@@ -50,3 +72,8 @@ func _on_continue() -> void:
 	if not GameManager.resume_run():
 		# 存档损坏时直接进入新流程。
 		GameManager.change_screen(&"character_select")
+
+
+func _on_logout() -> void:
+	AuthManager.logout()
+	GameManager.change_screen(&"login")

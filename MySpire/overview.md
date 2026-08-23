@@ -14,8 +14,9 @@
   - UI 设计系统规范（色彩/字体/组件/布局/动效 + Godot 实现映射）
 - **客户端工程**（Godot 4 GDScript，位于 `Client/`）：
   - 离线垂直切片：完整 run 循环（菜单→选角→地图→战斗→奖励→Boss→结算）
-  - 6 Autoload + game 纯逻辑层 + ui 表现层 + JSON 数据驱动内容
+  - 7 Autoload + game 纯逻辑层 + ui 表现层 + JSON 数据驱动内容
   - Google Play Billing（Android）+ StoreKit（iOS）+ 桌面模拟器三轨支付系统
+  - Google Sign-In + Sign in with Apple 三轨登录系统（Phase 1 抽象层 + 模拟器就绪，原生插件 Phase 2/3 接入）
   - **打包构建系统**：导出预设 + 自动化脚本（APK/AAB/IPA）+ 平台图标 + keystore 签名
   - 详见 `Client/README.md`
 
@@ -70,7 +71,7 @@ D:\GodotProjects\godot_learning\MySpire\
 │   └── UI设计系统.md       # 设计规范 + Godot 映射
 ├── Client/                 # Godot 4 客户端工程（离线垂直切片 + IAP + 打包构建）
 │   ├── README.md           # 运行方式 + 架构映射
-│   ├── project.godot       # 720×1280 竖屏 + 6 Autoload + Android/iOS 配置
+│   ├── project.godot       # 720×1280 竖屏 + 7 Autoload + Android/iOS 配置
 │   ├── export_presets.cfg  # 导出预设（Android APK/AAB + iOS Xcode）
 │   ├── .gitignore          # 忽略构建产物和签名文件
 │   ├── build/              # 打包构建系统

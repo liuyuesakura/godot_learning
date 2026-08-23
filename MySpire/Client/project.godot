@@ -32,6 +32,7 @@ SaveManager="*res://scripts/autoload/SaveManager.gd"
 NetworkClient="*res://scripts/autoload/NetworkClient.gd"
 RNGManager="*res://scripts/autoload/RNGManager.gd"
 PaymentManager="*res://scripts/autoload/PaymentManager.gd"
+AuthManager="*res://scripts/autoload/AuthManager.gd"
 
 [display]
 

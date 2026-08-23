@@ -55,3 +55,32 @@ func report_consumption(purchase_token: String) -> bool:
 		return false
 	# 未来：POST /api/iap/consume { purchase_token }
 	return false
+
+
+## ─── 认证（登录令牌交换） ──────────────────────────────────────────
+
+
+## 用平台 identity token 向服务端换取应用 JWT（跨平台统一入口）。
+## 离线桩：本地信任（仅原型；生产必须在线换取，否则 server_token 无签名无法验真）。
+## provider: "google" | "apple"。id_token: 平台返回的 identity token（JWT）。
+## 返回服务端 JWT 字符串；失败返回空串。
+func exchange_auth_token(provider: String, id_token: String) -> String:
+	if not is_online():
+		# 离线信任 —— 原型阶段。生产环境改为 return "" 强制在线换取。
+		return "sim_jwt_%s_%d" % [provider, Time.get_ticks_msec()]
+	# 在线换取（Phase 2/3 实装）：
+	#   var payload := {"provider": provider, "id_token": id_token}
+	#   var resp = await _post("/api/auth/exchange", payload)
+	#   if resp.code == 200:
+	#       return String(resp.data.get("jwt", ""))
+	return ""  # 在线换取未实装时拒绝（避免误以为已验证）
+
+
+## 发送短信验证码（Phase 2 实装：POST /api/auth/sms { phone } → 服务端接短信通道）。
+## 离线桩：AuthManager.send_sms_code 直接走模拟延迟，不经过此函数。
+func send_sms_code(phone: String) -> bool:
+	if not is_online():
+		return false
+	# var resp = await _post("/api/auth/sms", { "phone": phone })
+	# return resp.code == 200
+	return false
